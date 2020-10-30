@@ -14,6 +14,8 @@ OWASP ASST (Automated Software Security Toolkit) | A Novel Open Source Web Secur
 
 Note: AWSS is the older name of ASST
 
+![alt Preview](https://github.com/OWASP/ASST/blob/main/assets/images/asst.jpg?raw=true)
+
 # Introduction
 Web applications have become an integral part of everyday life, but many of these applications are deployed with critical vulnerabilities that can be fatally exploited. As the technology used to develop these applications become sophisticated, so do the attackers’ techniques. Attackers no longer need physical access to the victims, they can attack more than one at the same time and the possibility of being caught and brought to justice is minimal.
 Automated web vulnerability scanners have been heavily used to assess the security of web applications. They can improve the efficiency of vulnerability scanning compared to traditional manual vulnerability detection that are time-consuming, labor-intensive, and inefficient. There are a lot of web vulnerability scanners on the Internet, however, they do not explain the possible attack and how to have counter- measurements against it. 
