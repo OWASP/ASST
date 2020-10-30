@@ -1,0 +1,35 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.createRng = createRng;
+
+var _seedRandom = _interopRequireDefault(require("seed-random"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
+
+// create a random seed here to prevent an infinite loop from seed-random
+// inside the factory. Reason is that math.random is defined as a getter/setter
+// and seed-random generates a seed from the local entropy by reading every
+// defined object including `math` itself. That means that whilst getting
+// math.random, it tries to get math.random, etc... an infinite loop.
+// See https://github.com/ForbesLindesay/seed-random/issues/6
+var singletonRandom = /* #__PURE__ */(0, _seedRandom["default"])();
+
+function createRng(randomSeed) {
+  var random; // create a new random generator with given seed
+
+  function setSeed(seed) {
+    random = seed === null ? singletonRandom : (0, _seedRandom["default"])(String(seed));
+  } // initialize a seeded pseudo random number generator with config's random seed
+
+
+  setSeed(randomSeed); // wrapper function so the rng can be updated via generator
+
+  function rng() {
+    return random();
+  }
+
+  return rng;
+}
