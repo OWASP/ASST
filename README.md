@@ -1,10 +1,12 @@
 # ASST #BETA
 ASST (AUTOMATED WEB SOFTWARE SECURITY) | A NOVEL OPEN SOURCE WEB SECURITY SCANNER
 
+Old Name: AWSS
+
 # Introduction
 Web applications have become an integral part of everyday life, but many of these applications are deployed with critical vulnerabilities that can be fatally exploited. As the technology used to develop these applications become sophisticated, so do the attackers’ techniques. Attackers no longer need physical access to the victims, they can attack more than one at the same time and the possibility of being caught and brought to justice is minimal.
 Automated web vulnerability scanners have been heavily used to assess the security of web applications. They can improve the efficiency of vulnerability scanning compared to traditional manual vulnerability detection that are time-consuming, labor-intensive, and inefficient. There are a lot of web vulnerability scanners on the Internet, however, they do not explain the possible attack and how to have counter- measurements against it. 
-We designed and implemented a new automated web vulnerability scanner called Automated Web Software Security (ASST) Toolkit, which scans a web project’s source code and generates a report of the results with detailed explanation about each possible vulnerability and how to secure against it. We have tested the performance of ASST, and compared its results with other major open source vulnerability scanners. Our results show that ASST can identify web software security vulnerabilities more comprehensively and accurately.
+We designed and implemented a new automated web vulnerability scanner called Automated Software Security Toolkit (ASST), which scans a web project’s source code and generates a report of the results with detailed explanation about each possible vulnerability and how to secure against it. We have tested the performance of ASST, and compared its results with other major open source vulnerability scanners. Our results show that ASST can identify web software security vulnerabilities more comprehensively and accurately.
 
 NOTE: It is Still under development, Please, report for any error you get.
 
@@ -65,7 +67,7 @@ We are not keeping up with nodejs upgrades every month, so if you would like to 
 
 ## 3. Run ASST on Windows
 
-Download and Extract ASST's project from this github page, rename the folder to "ASST" only, not "ASST-master", move ASST's folder next to your web project to scan it, default: "C:\xampp\htdocs\ASST"
+Download and Extract ASST's project from this github page, rename the folder to "ASST" only, not "www-project-asst-main", move ASST's folder next to your web project to scan it, default: "C:\xampp\htdocs\ASST"
 
 ###### Configurations:
 
@@ -125,7 +127,7 @@ We are not keeping up with nodejs upgrades every month, so if you would like to 
 
 ## 3. Run ASST on Ubuntu
 
-Download and Extract ASST's project from this github page, using a browser, wget or git, rename the folder to "ASST" only, not "ASST-master", move ASST's folder next to your web project to scan it, default: "/opt/lampp/htdocs/ASST"
+Download and Extract ASST's project from this github page, using a browser, wget or git, rename the folder to "ASST" only, not "www-project-asst-main", move ASST's folder next to your web project to scan it, default: "/opt/lampp/htdocs/ASST"
 
 ###### Configurations:
 
@@ -177,7 +179,7 @@ We are not keeping up with nodejs upgrades every month, so if you would like to 
 
 ## 3. Run ASST on MacOSX
 
-Download and Extract ASST's project from this github page, using a browser or git, rename the folder to "ASST" only, not "ASST-master", move ASST's folder next to your web project to scan it, default: "/Applications/XAMPP/htdocs/ASST"
+Download and Extract ASST's project from this github page, using a browser or git, rename the folder to "ASST" only, not "www-project-asst-main", move ASST's folder next to your web project to scan it, default: "/Applications/XAMPP/htdocs/ASST"
 
 ###### Configurations:
 

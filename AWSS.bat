@@ -1,5 +1,5 @@
 @echo off
-echo Welcome to AWSS Toolkit
+echo Welcome to ASST
 echo.
 pause
 echo.

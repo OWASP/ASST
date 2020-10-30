@@ -1,3 +1,3 @@
 #!/bin/sh
-echo Welcome to AWSS Toolkit
+echo Welcome to ASST
 node main.js
