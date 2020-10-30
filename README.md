@@ -1,7 +1,7 @@
 # ASST #BETA
-ASST (AUTOMATED WEB SOFTWARE SECURITY) | A NOVEL OPEN SOURCE WEB SECURITY SCANNER
+ASST (AUTOMATED SOFTWARE SECURITY TOOLKIT) | A NOVEL OPEN SOURCE WEB SECURITY SCANNER
 
-Old Name: AWSS
+Note: AWSS is the older name of ASST
 
 # Introduction
 Web applications have become an integral part of everyday life, but many of these applications are deployed with critical vulnerabilities that can be fatally exploited. As the technology used to develop these applications become sophisticated, so do the attackers’ techniques. Attackers no longer need physical access to the victims, they can attack more than one at the same time and the possibility of being caught and brought to justice is minimal.
@@ -67,7 +67,7 @@ We are not keeping up with nodejs upgrades every month, so if you would like to 
 
 ## 3. Run ASST on Windows
 
-Download and Extract ASST's project from this github page, rename the folder to "ASST" only, not "www-project-asst-main", move ASST's folder next to your web project to scan it, default: "C:\xampp\htdocs\ASST"
+Download and Extract ASST's project from this github page, rename the folder to "ASST" only, not "ASST-main", move ASST's folder next to your web project to scan it, default: "C:\xampp\htdocs\ASST"
 
 ###### Configurations:
 
@@ -127,7 +127,7 @@ We are not keeping up with nodejs upgrades every month, so if you would like to 
 
 ## 3. Run ASST on Ubuntu
 
-Download and Extract ASST's project from this github page, using a browser, wget or git, rename the folder to "ASST" only, not "www-project-asst-main", move ASST's folder next to your web project to scan it, default: "/opt/lampp/htdocs/ASST"
+Download and Extract ASST's project from this github page, using a browser, wget or git, rename the folder to "ASST" only, not "ASST-main", move ASST's folder next to your web project to scan it, default: "/opt/lampp/htdocs/ASST"
 
 ###### Configurations:
 
@@ -179,7 +179,7 @@ We are not keeping up with nodejs upgrades every month, so if you would like to 
 
 ## 3. Run ASST on MacOSX
 
-Download and Extract ASST's project from this github page, using a browser or git, rename the folder to "ASST" only, not "www-project-asst-main", move ASST's folder next to your web project to scan it, default: "/Applications/XAMPP/htdocs/ASST"
+Download and Extract ASST's project from this github page, using a browser or git, rename the folder to "ASST" only, not "ASST-main", move ASST's folder next to your web project to scan it, default: "/Applications/XAMPP/htdocs/ASST"
 
 ###### Configurations:
 
@@ -200,5 +200,6 @@ Special Thanks to:
 1. Assist. Prof. Dr. Ece Gelal Soyak: https://scholar.google.com.tr/citations?user=w-RBj5QAAAAJ&hl=en
 2. Assist. Prof. Dr. Selçuk Baktır: https://scholar.google.com/citations?user=iwR7YF8AAAAJ&hl=en
 3. Assist. Prof. Dr. Özgül Küçük: https://scholar.google.com/citations?user=qJJSkrAAAAAJ&hl=en
+4. OWASP Foundation
 
 For making this toolkit possible by providing their guidance and help.
