@@ -55,7 +55,7 @@ module.exports = function() {
 				"<br/>" +
 				"<hr/>" +
 				"<center>" +
-					"<h1 style='color:green;font-weight:bold;'>AWSS Toolkit Report @ " + this.getDateAndTime() + "</h1>" +
+					"<h1 style='color:green;font-weight:bold;'>ASST Report @ " + this.getDateAndTime() + "</h1>" +
 				"</center>"+
 				"<hr/>" +
 			"</div>" +

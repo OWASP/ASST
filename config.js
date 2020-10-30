@@ -1,6 +1,6 @@
 module.exports = {
 	// Global Configs
-	THIS_PROJECT_FOLDER_NAME: "AWSS", // Change it only if you changed this project's folder name, // case sensitive // for Contributors (Used in core/index.js)
+	THIS_PROJECT_FOLDER_NAME: "ASST", // Change it only if you changed this project's folder name, // case sensitive // for Contributors (Used in core/index.js)
 	IS_DEBUG_MODE_ENABLED: false, // For Debugging this Toolkit
 	
 	USED_PROGRAMMING_LANGUAGE: "php", // choose php // not empty! // for now only PHP supported // for Contributors (Used in main.js)

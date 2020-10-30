@@ -1,5 +1,5 @@
 @echo off
-echo Welcome to ASST
+echo Welcome to OWASP ASST
 echo.
 pause
 echo.
