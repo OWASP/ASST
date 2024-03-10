@@ -1,0 +1,40 @@
+{
+  "name": "asst",
+  "version": "1.0.0",
+  "description": "OWASP ASST (Automated Software Security Toolkit) | A Novel Open Source Web Security Scanner.",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/OWASP/ASST.git"
+  },
+  "keywords": [
+    "security-audit",
+    "owasp",
+    "cybersecurity",
+    "web-vulnerability-scanner",
+    "security-hardening",
+    "vulnerability-detection",
+    "vulnerability-scanners",
+    "vulnerability-assessment",
+    "owasp-top-10",
+    "vulnerability-scanner",
+    "security-testing",
+    "security-assessments",
+    "web-vulnerability-scanners",
+    "asst",
+    "security-assesment-security-tools"
+  ],
+  "author": "Tarik Seyceri",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/OWASP/ASST/issues"
+  },
+  "homepage": "https://github.com/OWASP/ASST#readme",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "sync-mysql": "^3.0.1"
+  }
+}

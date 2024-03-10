@@ -1,5 +1,4 @@
 // Libraries
-const Math = require("mathjs");
 const coreLib = require("../../core");
 const phpCoreLib = require("./core.js");
 
