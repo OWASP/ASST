@@ -81,6 +81,10 @@ Download and Extract ASST's project from this github page, rename the folder to 
 
 Double click on ASST.bat to run it. if it gets blocked by Windows Defender Smart Screen, allow it by clicking on More Info then Run or Run Anyway, or you can just run it using CMD command.
 
+Run this command once to install node_modules for this project:
+
+> $ cd C:\xampp\htdocs\ASST && npm install
+
 default CMD command to run ASST:
 
 > $ node C:\xampp\htdocs\ASST\main.js
@@ -139,6 +143,10 @@ Download and Extract ASST's project from this github page, using a browser, wget
 
 ###### PS: The two config files are well explained of what to change to suit your project.
 
+Run this command once to install node_modules for this project:
+
+> $ cd /opt/lampp/htdocs/ASST && sudo npm install
+
 To run ASST, default command:
 
 > $ sudo node /opt/lampp/htdocs/ASST/main.js
@@ -190,6 +198,10 @@ Download and Extract ASST's project from this github page, using a browser or gi
 2. Open config_php_lang.js inside ASST's folder: if you are using MySQL you must set the variables as explained in the file, if you are not using MySQL, just set IS_DBMS_USED variable to false, and ignore the rest, note that PHP_EXE_BIN_PATH is set to XAMPP's default location, so change it if you are using different PHP binary or different XAMPP location.
 
 ###### PS: The two config files are well explained of what to change to suit your project.
+
+Run this command once to install node_modules for this project:
+
+> $ cd /Applications/XAMPP/htdocs/ASST && sudo npm install
 
 To run ASST, default command:
 
