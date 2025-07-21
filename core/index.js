@@ -163,7 +163,7 @@ module.exports = function() {
 		var wordsFoundInLineNumber = [];
 		
 		try {
-			var lines = fs.readFileSync(inFile, 'utf-8').split('\n').filter(Boolean);
+			var lines = fs.readFileSync(inFile, 'utf-8').split('\n');
 			
 			var wordsToFindInLine = lineToFind.split(" ");
 			var wordsFoundInLine = [];
