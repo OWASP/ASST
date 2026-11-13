@@ -11,3 +11,5 @@ node_modules
 Thumbs.db
 
 report.html
+# Benchmark datasets and scratch output (downloaded, never committed)
+bench/.work/

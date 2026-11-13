@@ -4,7 +4,9 @@
   "description": "OWASP ASST (Automated Software Security Toolkit) | A Novel Open Source Web Security Scanner.",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node scripts/run-tests.js",
+    "bench": "node bench/run.js --write-results",
+    "bench:ci": "node bench/run.js --datasets fixtures,fixtures-app,dvwa,sard --sard-sample 2000 --versions head --check-baseline bench/baseline-metrics.json"
   },
   "repository": {
     "type": "git",

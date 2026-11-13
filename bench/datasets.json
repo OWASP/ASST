@@ -1,0 +1,32 @@
+{
+  "fixtures": {
+    "type": "local",
+    "path": "test/fixtures/php",
+    "truth": "annotations"
+  },
+  "fixtures-app": {
+    "type": "local",
+    "path": "test/fixtures/php-vulnerable-app",
+    "truth": "annotations"
+  },
+  "dvwa": {
+    "type": "git",
+    "repo": "https://github.com/digininja/DVWA.git",
+    "commit": "a1978a2fed195acd093010af6395f86a281537ca",
+    "truth": "bench/truth/dvwa.json"
+  },
+  "sard": {
+    "type": "zip",
+    "name": "NIST SARD test suite #103 - PHP Vulnerability Test Suite (Stivalet & Delaitre, 42,212 cases)",
+    "url": "https://samate.nist.gov/SARD/downloads/test-suites/2015-10-27-php-vulnerability-test-suite.zip",
+    "sha256": "3407473fc2cfa38eea9216b8a7f22559b656f20ba5f2eb3b6992010265780f8c",
+    "truth": "sard-manifests"
+  },
+  "wordpress": {
+    "type": "zip",
+    "name": "WordPress 7.1.4 core (throughput only, no ground truth)",
+    "url": "https://downloads.wordpress.org/release/wordpress-7.1.4.zip",
+    "sha256": null,
+    "truth": "none"
+  }
+}
