@@ -4,8 +4,9 @@
  */
 
 function render(model) {
-  const { asstRoot, ...rest } = model;
+  const { asstRoot, guides, ...rest } = model;
   void asstRoot;
+  void guides;
   return `${JSON.stringify(rest, null, 2)}\n`;
 }
 

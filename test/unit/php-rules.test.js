@@ -112,3 +112,13 @@ test('HTML report escapes file names and code', () => {
   assert.ok(!/<img src=x/.test(out) && !/<script>alert/.test(out) && !/<b>t<\/b>/.test(out));
   assert.match(out, /&lt;script&gt;alert\(1\)/);
 });
+
+test('every rule links to an existing guide section', () => {
+  const { loadGuides, pickGuides } = require('../../core/guides');
+  const guides = loadGuides(path.join(__dirname, '..', '..', 'langs', 'php', 'guides'));
+  for (const r of RULES) assert.ok(guides.has(r.guide), `${r.id} -> ${r.guide}`);
+  for (const n of require('../../langs/php/notices')) assert.ok(guides.has(n.guide), `notice -> ${n.guide}`);
+  const picked = pickGuides(guides, ['injection#sql-injection']);
+  assert.match(picked['injection#sql-injection'].html, /<pre><code class="language-php">/);
+  assert.match(picked['injection#sql-injection'].html, /target="_blank" rel="noopener noreferrer"/);
+});

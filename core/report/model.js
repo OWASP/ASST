@@ -64,6 +64,7 @@ function buildModel(p) {
     findings,
     fixed: p.fixed || [],
     notices: p.notices || [],
+    guides: p.guides || {},
     rules: p.rules || [],
     asstRoot: p.config.asstRoot,
   };

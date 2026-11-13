@@ -10,6 +10,7 @@ ASST 2.0 is a major upgrade built on the foundation of the original thesis relea
 
 - Data-flow (taint) analysis for PHP. Every PHP file is parsed, and user input is followed from request sources to dangerous functions through variables, arrays, string building, `sprintf`, functions, methods and classes. Sanitizers and validation checks are understood per output context: SQL quoting, HTML text/attribute/script/URL, shell quoting, LDAP filters, XPath, file paths and URLs. Each finding shows the data-flow trace from source to sink.
 - New detections: server-side request forgery, open redirect, path traversal, XPath injection, insecure deserialization, variable extraction (`extract`/`parse_str`), log and mail-header injection, code injection through `eval`/`assert`/`create_function`, unsafe dynamic calls, execution after redirect, weak password hashing, predictable random tokens, loose comparison of secrets, session fixation, hard-coded credentials, errors and `phpinfo()` shown to visitors, database error disclosure, DOM-based XSS and JavaScript `eval`, and version-control folders, backups, keys and dumps inside the web root.
+- Remediation guides in Markdown (`langs/php/guides/`), one section per rule, written for current PHP 8 practice and the OWASP Top 10:2025. The relevant section is shown under each finding in the HTML report and used as rule help in SARIF.
 - Findings are mapped to the OWASP Top 10:2025 (with the 2021 category) and to CWE, and carry a severity, a confidence level and a code snippet.
 - Interactive HTML report: one self-contained file that works offline, with severity tiles, search, filters (severity, confidence, OWASP category), grouping by category/file/rule, code snippets with the line highlighted, data-flow traces, dark mode and print layout. Content is fully HTML-escaped and protected by a strict Content-Security-Policy.
 - SARIF 2.1.0 output (`--format sarif`) for GitHub code scanning and IDE viewers, with CWE/OWASP tags, security-severity scores, stable fingerprints and data-flow code flows.
@@ -39,6 +40,8 @@ ASST 2.0 is a major upgrade built on the foundation of the original thesis relea
 - The report is a complete, HTML-escaped document, and its links to the remediation guides are standard `file://` URLs that open on Windows, Linux and macOS.
 - Database checks use a single connection, escaped identifiers and aggregate queries, and only ever read the length and prefix of stored password hashes, never the hashes themselves. MySQL 8 authentication is supported.
 - A missing PHP binary or an unreachable database now produces a short note in the summary and the rest of the scan continues.
+
+- The eleven PDF/DOCX guides were revised for PHP 8 and the OWASP Top 10:2025, covering prepared statements with PDO settings, per-argument shell escaping, context-aware output encoding, `password_hash()`-based password storage, HTTPS and HSTS configuration, current XML parser defaults, SSRF allow-lists, modern MongoDB and logging examples, and links to the 2025 categories.
 
 ### Changed
 

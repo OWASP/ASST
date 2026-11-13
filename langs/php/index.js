@@ -17,6 +17,7 @@ const { RULES, rule } = require('./rules/registry');
 const { phpRuntime, databaseChecks } = require('./runtime/checks');
 const { PhpDatabase, normalizeDbConfig } = require('./runtime/db');
 const manualReview = require('./notices');
+const { loadGuides, pickGuides } = require('../../core/guides');
 const { createFinding, fingerprint, dedupe, compareFindings, atLeastSeverity, atLeastConfidence } = require('../../core/finding');
 const { applyInlineSuppressions, loadBaseline, writeBaseline, compareWithBaseline } = require('../../core/suppress');
 const { buildModel } = require('../../core/report/model');
@@ -209,6 +210,7 @@ module.exports = {
       findings: visible,
       notices: [...scanNotices, ...manualReview],
       rules: RULES.filter((r) => visible.some((f) => f.ruleId === r.id)),
+      guides: pickGuides(loadGuides(path.join(__dirname, 'guides')), visible.map((f) => f.guide)),
     });
     const reports = writeReports(model, config);
     consoleReport.print(model, { quiet: config.quiet, reportFiles: reports });
