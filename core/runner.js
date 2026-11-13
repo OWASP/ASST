@@ -101,7 +101,7 @@ async function run(argv = process.argv.slice(2)) {
 
   printNotices(notices, config.quiet);
   const seconds = Math.round((Date.now() - started) / 1000);
-  if (!config.quiet) {
+  if (!config.quiet && !(result && result.model)) {
     console.log(`Total scan time: ${seconds} Seconds`);
     console.log('');
   }

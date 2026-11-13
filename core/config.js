@@ -101,6 +101,7 @@ function loadConfig(cli = {}, env = process.env, root = ASST_ROOT) {
     liveUrl: cli.url || env.ASST_URL || user.LIVE_SCAN_URL || null,
     allowRemote: Boolean(cli.allowRemote),
     online: Boolean(cli.online || user.ONLINE_CHECKS),
+    secondOrder: Boolean(cli.secondOrder || user.SECOND_ORDER_SOURCES),
     jobs: cli.jobs ? Number(cli.jobs) : null,
     quiet: Boolean(cli.quiet),
     color: cli.color !== false,

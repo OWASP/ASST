@@ -39,6 +39,7 @@
   },
   "homepage": "https://github.com/OWASP/ASST#readme",
   "dependencies": {
-    "mysql2": "3.24.6"
+    "mysql2": "3.24.6",
+    "php-parser": "3.7.0"
   }
 }

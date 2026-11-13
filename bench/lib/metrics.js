@@ -90,7 +90,8 @@ function scoreLineLevel(truth, findings) {
 }
 
 /** File-level scoring (SARD / DVWA). */
-function scoreFileLevel(cases, findings) {
+function scoreFileLevel(cases, allFindings) {
+  const findings = allFindings.filter((f) => f.file);
   const table = {};
   const byFile = new Map();
   for (const f of findings) {

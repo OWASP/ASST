@@ -126,6 +126,7 @@ function scan(prepared, datasetDir, datasetName, opts = {}) {
     const args = ['--path', datasetDir, '--format', 'json', '--out', runDir, '--no-db', '--php-bin', '',
       '--quiet', '--no-color', '--min-severity', 'info', '--min-confidence', 'low'];
     if (opts.extraArgs) args.push(...opts.extraArgs);
+    if (datasetName === 'sard') args.push('--second-order');
     const stats = spawnMeasured(prepared.dir, args, statsFile, timeoutMs);
     const reportFile = path.join(runDir, 'report.json');
     if (!fs.existsSync(reportFile)) throw new Error(`no report.json produced (exit ${stats.exitCode}): ${stats.stderr}`);

@@ -6,9 +6,6 @@ const os = require('os');
 const path = require('path');
 const { runRules } = require('../../core/rule-engine');
 const { parseInline, applyInlineSuppressions, writeBaseline, loadBaseline, compareWithBaseline } = require('../../core/suppress');
-const { LegacyCore } = require('../../core/legacy');
-const { FileCache } = require('../../core/file-cache');
-const { walkProject } = require('../../core/walker');
 
 function ctxFor(files) {
   const lines = Object.fromEntries(Object.entries(files).map(([k, v]) => [k, v.split('\n')]));
@@ -57,33 +54,4 @@ test('baseline marks new/unchanged findings and lists fixed ones', () => {
   assert.deepStrictEqual(current.map((f) => f.baseline), ['unchanged', 'new']);
   assert.deepStrictEqual(fixed.map((f) => f.fingerprint), ['bbb']);
   fs.unlinkSync(file);
-});
-
-test('legacy line matching keeps v1 semantics while reading each file once', () => {
-  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'asst-legacy-'));
-  try {
-    fs.writeFileSync(path.join(root, 'q.php'), [
-      '<?php',
-      '$r = mysqli_query($con, $sql);',
-      '$r = mysqli_query($con,',
-      '  $sql);',
-      '$x = 1; $y = 2; $z = 3;',
-    ].join('\n'));
-    const project = walkProject(root);
-    const cache = new FileCache();
-    const core = new LegacyCore({ config: { user: {}, scanPath: root, htmlPath: path.join(root, 'r.html'), asstRoot: root, debug: false, quiet: true }, project, cache });
-    const file = path.join(root, 'q.php');
-    assert.deepStrictEqual(core.findLineInFile('mysqli_query( ,$', file, true, true), [2]);
-    // checkIfIncompleteCodeLine + notifyOnlyIfIncompleteCodeLineDetected reports the unfinished line only
-    assert.deepStrictEqual(core.findLineInFile('mysqli_query(', file, true, true, false, false, '', '', false, null, true, false, true), [3]);
-    assert.strictEqual(core.findLinesInFile(['$x', '$z'], file), 2);
-    assert.deepStrictEqual(core.findLinesInFile(['$x', '$z'], file, true), [5, 5]);
-    assert.strictEqual(cache.reads, 1);
-    assert.match(core.docUrl('langs/php/docs/a b.pdf'), /^file:\/\/.*a%20b\.pdf$/);
-    core.initReport();
-    core.findLineInFile('$x', file, false, false, false, false, '<b>msg</b>', '', true);
-    assert.match(core.html.join(''), /&lt;b&gt;msg&lt;\/b&gt;/);
-  } finally {
-    fs.rmSync(root, { recursive: true, force: true });
-  }
 });

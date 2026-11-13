@@ -8,6 +8,12 @@ ASST 2.0 is a major upgrade built on the foundation of the original thesis relea
 
 ### Added
 
+- Data-flow (taint) analysis for PHP. Every PHP file is parsed, and user input is followed from request sources to dangerous functions through variables, arrays, string building, `sprintf`, functions, methods and classes. Sanitizers and validation checks are understood per output context: SQL quoting, HTML text/attribute/script/URL, shell quoting, LDAP filters, XPath, file paths and URLs. Each finding shows the data-flow trace from source to sink.
+- New detections: server-side request forgery, open redirect, path traversal, XPath injection, insecure deserialization, variable extraction (`extract`/`parse_str`), log and mail-header injection, code injection through `eval`/`assert`/`create_function`, unsafe dynamic calls, execution after redirect, weak password hashing, predictable random tokens, loose comparison of secrets, session fixation, hard-coded credentials, errors and `phpinfo()` shown to visitors, database error disclosure, DOM-based XSS and JavaScript `eval`, and version-control folders, backups, keys and dumps inside the web root.
+- Findings are mapped to the OWASP Top 10:2025 (with the 2021 category) and to CWE, and carry a severity, a confidence level and a code snippet.
+- JSON report (`--format json`) with a versioned schema.
+- Up-to-date lifecycle data (`data/eol.json`) for PHP, MySQL and MariaDB; stored passwords are classified by hash format (bcrypt/argon2, fast hashes, plain text) and the database server version is checked against its support dates.
+- New options: `--second-order` (treat session data, files, database rows and command output as untrusted), `--min-severity`, `--min-confidence`, `--fail-on` for CI, `--rules`/`--disable-rules`, `--baseline`/`--update-baseline`, and inline `asst-ignore[RULE-ID]` comments.
 - Command-line options (`node main.js --help`): choose the folder to scan (`--path`), report location (`--out`), exclusions (`--exclude`), dependency folders (`--include-vendor`), PHP binary (`--php-bin`), skip database checks (`--no-db`), quiet and no-color modes. Running `node main.js` without options works exactly as before.
 - `.asstignore` file and `EXCLUDE_PATHS` setting to skip paths; `YOUR_WEBAPP_DBMS_PORT` setting; `ASST_DB_PASSWORD` (and `ASST_DB_HOST`, `ASST_DB_USER`, `ASST_DB_NAME`, `ASST_DB_PORT`, `ASST_PHP_BIN`) environment variables so credentials do not have to be stored in a file.
 - Benchmark harness (`npm run bench`) that measures precision, recall and F1 per CWE on labeled PHP datasets: the ASST fixture corpus, DVWA, and the NIST SARD PHP Vulnerability Test Suite (42,212 cases), plus throughput on WordPress core.
@@ -16,6 +22,13 @@ ASST 2.0 is a major upgrade built on the foundation of the original thesis relea
 
 ### Improved
 
+- SQL injection detection follows queries built over several lines and inside functions, and recognizes prepared statements, escaping inside quotes and numeric conversions.
+- Cross-site scripting detection understands where each value is written in the page (text, quoted or unquoted attribute, event handler, script, URL).
+- Command injection detection covers the backtick operator and recognizes `escapeshellarg()` per argument.
+- Redirect checks recognize every way a script stops (`exit;`, `die;`, `return`, `throw`).
+- CSRF checks focus on POST forms and recognize framework token helpers.
+- XML checks focus on the parser options that enable external entities on current PHP versions.
+- Benchmark results (see `bench/RESULTS.md`): on the NIST SARD PHP sample, F1 rises from 35.6% to 66.5% while scanning about 15 times faster; on DVWA, F1 rises from 84.6% to 88.0% with 100% precision.
 - About 10x faster scans: the project tree is walked once and every file is read once per scan (NIST SARD sample: 97 s to 9 s; DVWA: 10 s to 1 s).
 - Dependency folders (`vendor/`, `node_modules/`, `bower_components/`) and version-control folders are skipped by default.
 - Paths are resolved relative to the ASST folder: ASST can be started from any directory, the folder may keep the name `ASST-main`, and `DEFAULT_PROJECT_PATH_TO_SCAN` accepts absolute paths on every operating system.

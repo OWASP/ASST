@@ -68,7 +68,9 @@ async function loadTruth(name, opts) {
     const cases = sampleSard(all, opts.sardSample);
     const label = opts.sardSample > 0 && opts.sardSample < all.length ? `sample-${opts.sardSample}` : 'full';
     const dir = materializeSard(full, cases, label);
-    return { dir, kind: 'file', cases, note: `${cases.length} of ${all.length} cases (${label})` };
+    // SARD labels XPath injection as CWE-91 (XML injection); ASST reports CWE-643 (XPath injection)
+    const scored = cases.map((c) => (c.cwe === 'CWE-91' ? { ...c, cwes: ['CWE-91', 'CWE-643'] } : c));
+    return { dir, kind: 'file', cases: scored, note: `${cases.length} of ${all.length} cases (${label}); scanned with --second-order, matching the suite's threat model (session data, files and command output are untrusted)` };
   }
   if (name === 'wordpress') {
     const dir = await ensureDataset('wordpress');
@@ -117,8 +119,16 @@ function renderMarkdown(results, opts) {
     }
     lines.push('');
   }
+  lines.push('## Notes', '', ...NOTES.map((n) => `- ${n}`), '');
   return lines.join('\n');
 }
+
+const NOTES = [
+  'Fixtures: the annotated ASST fixture corpus (test/fixtures). It is also the regression suite, so high scores are expected there; DVWA and NIST SARD are the independent measures.',
+  'DVWA: ground truth per module and security level in bench/truth/dvwa.json ("impossible" level = secure reference). Modules whose flaw spans several files are scored at module level.',
+  'NIST SARD #103: scored per test-case file. The suite treats session data, files and command output as untrusted input, so the current engine runs with --second-order on this dataset. Labels are used exactly as published; a small number of generated cases sanitize a different variable than the one they use, which affects every tool equally.',
+  'v1.0 findings are mapped to CWE ids by the function or message each finding names.',
+];
 
 function compareBaseline(results, baselineFile) {
   const baseline = JSON.parse(fs.readFileSync(baselineFile, 'utf8'));

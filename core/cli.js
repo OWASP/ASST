@@ -19,6 +19,7 @@ const OPTIONS = [
   ['disable-rules', 'string', null, 'Skip these rule ids (comma separated, prefix match)'],
   ['baseline', 'string', null, 'Compare with a baseline file and mark findings as new/unchanged'],
   ['update-baseline', 'string', null, 'Write the current findings to a baseline file'],
+  ['second-order', 'boolean', null, 'Also treat session data, files, database rows and command output as untrusted input'],
   ['no-db', 'boolean', null, 'Skip database checks even if IS_DBMS_USED is true'],
   ['php-bin', 'string', null, 'PHP CLI binary used for runtime checks ("" disables them)'],
   ['url', 'string', 'u', 'Base URL of the running site for the opt-in live checks (e.g. http://localhost/MyProject/)'],
