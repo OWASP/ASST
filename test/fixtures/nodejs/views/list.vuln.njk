@@ -1,0 +1,1 @@
+<ul>{% for item in items %}<li>{{ item.label | safe }}</li>{% endfor %}</ul> {# @expect CWE-79 #}

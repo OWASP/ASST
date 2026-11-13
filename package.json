@@ -40,11 +40,17 @@
   },
   "homepage": "https://github.com/OWASP/ASST#readme",
   "dependencies": {
+    "@babel/parser": "7.29.11",
     "marked": "15.0.12",
     "mysql2": "3.24.6",
     "php-parser": "3.7.0"
   },
   "devDependencies": {
     "ajv": "8.20.0"
+  },
+  "overrides": {
+    "@babel/types": "7.29.11",
+    "@babel/helper-string-parser": "7.29.11",
+    "@babel/helper-validator-identifier": "7.29.7"
   }
 }

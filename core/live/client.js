@@ -72,7 +72,8 @@ class LiveClient {
         method,
         lookup,
         agent: false,
-        rejectUnauthorized: false, // local development servers often use self-signed certificates
+        // asst-ignore[NODE-TLS-001] local development servers often use self-signed certificates; only status codes and headers are read
+        rejectUnauthorized: false,
         headers: { 'user-agent': USER_AGENT, accept: '*/*', ...headers },
       }, (res) => {
         const chunks = [];

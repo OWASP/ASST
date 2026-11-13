@@ -40,6 +40,15 @@ ASST 2.0 is a major upgrade built on the foundation of the original thesis relea
   - session cookie and session id settings (`HttpOnly`, `SameSite`, `Secure`, `use_strict_mode`);
   - optional hardening: `open_basedir`, `disable_functions`, `allow_url_fopen`, `zend.assertions`.
 - When ASST runs from an XAMPP `htdocs` folder, the report suggests the matching `--url` for the live checks.
+- Node.js plugin (`--lang nodejs`, or `USED_PROGRAMMING_LANGUAGE: "nodejs"`) for JavaScript and TypeScript applications built with Express and Express-style frameworks. It uses the same data-flow engine as the PHP scanner, follows request data (`req.query`, `req.body`, `req.params`, cookies, headers) through functions, callbacks, promises and modules, and reports:
+  - SQL injection (mysql/mysql2, pg, Knex, Sequelize, Prisma raw queries) and NoSQL injection (MongoDB/Mongoose operators and `$where`);
+  - command and argument injection, and code injection through `eval`/`Function`/`vm`/string timers and dynamic `require()`/`import()`;
+  - XSS in responses and in raw template output (EJS, Handlebars, Pug, Nunjucks, Vue);
+  - path traversal, SSRF, open redirects, regular expressions built from user input, prototype pollution through deep merges, and unsafe deserialization;
+  - configuration issues: missing helmet/security headers, CORS that trusts every origin, session cookie settings, JWT verification without a fixed algorithm, disabled TLS certificate checks, `express.static()` on the project folder, weak password hashing, `Math.random()` tokens, and end-of-life Node.js versions in `.nvmrc`, `engines` or Docker images.
+
+  Dependencies, secrets and live checks work as for PHP, and the plugin comes with its own remediation guides. `--lang auto` picks the plugin from the project's files; PHP stays the default.
+- Annotated Node.js fixture corpus and a sample Express application, used as ground truth in the automated tests.
 - Findings are mapped to the OWASP Top 10:2025 (with the 2021 category) and to CWE, and carry a severity, a confidence level and a code snippet.
 - Interactive HTML report: one self-contained file that works offline, with severity tiles, search, filters (severity, confidence, OWASP category), grouping by category/file/rule, code snippets with the line highlighted, data-flow traces, dark mode and print layout. Content is fully HTML-escaped and protected by a strict Content-Security-Policy.
 - SARIF 2.1.0 output (`--format sarif`) for GitHub code scanning and IDE viewers, with CWE/OWASP tags, security-severity scores, stable fingerprints and data-flow code flows.

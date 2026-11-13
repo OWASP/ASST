@@ -8,6 +8,7 @@ const path = require('path');
 
 const REGISTRY = {
   php: () => require('../langs/php'),
+  nodejs: () => require('../langs/nodejs'),
 };
 
 function available() {

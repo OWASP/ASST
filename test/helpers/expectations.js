@@ -15,7 +15,7 @@ const fs = require('fs');
 const path = require('path');
 
 const EXPECT_RE = /@expect\s+(CWE-\d+(?:\|CWE-\d+)*)(?:\s+conf=(high|medium|low))?/g;
-const TEXT_EXTENSIONS = new Set(['.php', '.phtml', '.inc', '.html', '.htm', '.js', '.mjs', '.cjs', '.ts', '.twig', '.tpl']);
+const TEXT_EXTENSIONS = new Set(['.php', '.phtml', '.inc', '.html', '.htm', '.js', '.mjs', '.cjs', '.ts', '.jsx', '.tsx', '.twig', '.tpl', '.ejs', '.hbs', '.handlebars', '.pug', '.njk', '.vue']);
 
 function toPosix(p) {
   return p.split(path.sep).join('/');

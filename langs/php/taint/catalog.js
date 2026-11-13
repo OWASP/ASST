@@ -131,7 +131,7 @@ function pathOrUrlSinks(v) {
 const DB_CLASSES = new Set(['mysqli', 'pdo', 'sqlite3', 'pgsql\\connection']);
 
 function methodSqlSinks(e, ctx) {
-  const recv = e.recv ? ctx.evalExpr(e.recv) : null;
+  const recv = ctx.recv || (e.recv ? ctx.evalExpr(e.recv) : null);
   const cls = recv && recv.obj && recv.obj.cls ? String(recv.obj.cls).toLowerCase() : '';
   if (cls === 'domxpath') return [S('PHP-XPATH-001', 0, 'xpath')];
   const penalty = DB_CLASSES.has(cls) ? 0 : 1;

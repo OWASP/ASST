@@ -73,9 +73,25 @@ class Env {
   }
 }
 
-function pathText(t) {
+/** Source-like text of an access path; `style` comes from the language catalog. */
+function pathText(t, style = {}) {
   if (!t || t.k !== 'path') return 'a variable';
-  return `$${t.base}${t.segs.map((s) => (s.prop !== undefined ? `->${s.prop}` : `[${s.key === null || s.key === '*' ? '' : JSON.stringify(s.key)}]`)).join('')}`;
+  const prefix = style.varPrefix !== undefined ? style.varPrefix : '$';
+  const prop = style.prop || '->';
+  const dotKeys = Boolean(style.dotKeys);
+  return `${prefix}${t.base}${t.segs.map((s) => {
+    if (s.prop !== undefined) return `${prop}${s.prop}`;
+    if (dotKeys && typeof s.key === 'string' && /^[A-Za-z_$][\w$]*$/.test(s.key)) return `.${s.key}`;
+    return `[${s.key === null || s.key === '*' ? '' : JSON.stringify(s.key)}]`;
+  }).join('')}`;
+}
+
+/** Signature of the tainted variables a closure captured (part of the memo key). */
+function captureSignature(env) {
+  if (!env) return '';
+  const parts = [];
+  for (const [k, v] of env.vars) if (v && v.t) parts.push(`${k}:${v.c}${v.g ? 'g' : ''}`);
+  return parts.sort().join(',');
 }
 
 function signature(values) {
@@ -108,26 +124,37 @@ class Interpreter {
     this.depth = 0;
     this.budget = options.budget || 400000;
     this.mainEnv = null;
+    this.mainEnvs = shared.mainEnvs || new Map(); // file -> module scope after running it (for closures)
+    this.style = (catalog && catalog.style) || {};
     this.exhausted = false;
   }
 
   run({ standalone = true } = {}) {
     const env = new Env();
     this.mainEnv = env;
+    // module scopes are kept only for languages whose functions close over them (JavaScript)
+    if (this.cat.capturesScope) this.mainEnvs.set(this.p.file, env);
     this.execBlock(this.p.main, env, { fn: null, file: this.p.file });
     if (standalone) this.analyzeRemaining(this.p.allFunctions);
     return { hits: [...this.hits.values()], exhausted: this.exhausted };
   }
 
-  /** Analyzes functions that were never called, with untainted (or assumed-tainted) parameters. */
+  /**
+   * Analyzes functions that were never called. Parameters are untainted unless the catalog knows
+   * the function is an entry point (for example a web request handler) or assumeParamsTainted is set.
+   * Functions that capture their scope (JavaScript) see the module scope of their file.
+   */
   analyzeRemaining(functions) {
     for (const fn of functions) {
       if (this.analyzed.has(fn)) continue;
-      const args = this.opts.assumeParamsTainted
-        ? fn.params.map((p) => V.source('src', `parameter $${p.name}`, fn.line, 2))
+      let args = this.opts.assumeParamsTainted
+        ? fn.params.map((p) => V.source('src', `parameter ${this.style.varPrefix !== undefined ? this.style.varPrefix : '$'}${p.name}`, fn.line, 2))
         : [];
+      const entry = this.cat.entryArgs ? this.cat.entryArgs(fn, this.opts) : null;
+      if (entry) args = entry;
       const thisVal = fn.cls ? this.newObjectValue(fn.cls, false) : null;
-      this.invoke(fn, args, [], thisVal, fn.line);
+      const captured = fn.captures ? this.mainEnvs.get(fn.file) || null : null;
+      this.invoke(fn, args, [], thisVal, fn.line, captured);
     }
   }
 
@@ -152,7 +179,7 @@ class Interpreter {
         if (s.op === '.=') v = V.concat([this.read(s.target, env, f), v]);
         else if (s.op === '??=') v = V.join(this.read(s.target, env, f), v);
         else if (s.op && s.op !== '=') v = { t: false, num: true };
-        this.write(s.target, v.t ? V.step(v, s.line, `assigned to ${pathText(s.target)}`) : v, env, f, s.line);
+        this.write(s.target, v.t ? V.step(v, s.line, `assigned to ${pathText(s.target, this.style)}`) : v, env, f, s.line);
         break;
       }
       case 'expr':
@@ -490,7 +517,8 @@ class Interpreter {
       case 'bin': {
         const l = this.eval(e.left, env, f);
         const r = this.eval(e.right, env, f);
-        if (e.op === '??' || e.op === '?:') return V.join(l, r);
+        // JavaScript's || and && return one of their operands
+        if (e.op === '??' || e.op === '?:' || (e.valueOps && (e.op === '||' || e.op === '&&'))) return V.join(l, r);
         if (e.op === '.') return V.concat([l, r]);
         if (['+', '-', '*', '/', '%', '**', '<<', '>>', '&', '|', '^', '<=>'].includes(e.op)) {
           if (e.op === '+' && (l.arr || r.arr)) return V.join(l, r);
@@ -531,8 +559,12 @@ class Interpreter {
         this.write(e.target, v, env, f, e.line);
         return v;
       }
-      case 'closure':
-        return { t: false, fn: e.fn };
+      case 'closure': {
+        const fn = e.fn || (e.fnName ? this.findFunction(e.fnName) : null);
+        if (!fn) return V.CLEAN;
+        // closures that capture their defining scope (JavaScript) keep a reference to it
+        return fn.captures ? { t: false, fn, captured: env } : { t: false, fn };
+      }
       case 'new':
         return this.evalNew(e, env, f);
       case 'call':
@@ -674,6 +706,13 @@ class Interpreter {
       readPath: (p) => this.read(p, env, f),
       // lets catalogs apply another catalog function (e.g. an array_map callback)
       callCatalog: (callee, argVals, line) => (this.cat.call ? this.cat.call(callee, argVals, { callee, args: [], line: line || 0 }, api) : null),
+      // runs a closure value (callbacks, request handlers) and returns its result
+      invokeClosure: (cv, argVals, line, thisVal = null) => {
+        if (!cv || !cv.fn) return V.CLEAN;
+        const res = this.invoke(cv.fn, argVals || [], [], thisVal, line || cv.fn.line, cv.captured || (cv.fn.captures ? this.mainEnvs.get(cv.fn.file) || null : null));
+        return res.ret || V.CLEAN;
+      },
+      findFunction: (name) => this.findFunction(name),
     };
     return api;
   }
@@ -682,11 +721,14 @@ class Interpreter {
     const argExprs = e.args || [];
     const args = argExprs.map((a) => this.eval(a, env, f));
     const callee = e.callee || '';
+    // the receiver of a method call is evaluated once and shared with the catalog
+    const recvVal = callee.startsWith('m:') && e.recv ? this.eval(e.recv, env, f) : null;
 
     // user-defined code first
-    const user = this.resolveUser(e, env, f);
+    const user = this.resolveUser(e, env, f, recvVal);
     if (user) {
-      const res = this.invoke(user.fn, args, argExprs, user.thisVal, e.line);
+      const captured = user.fn.captures ? this.mainEnvs.get(user.fn.file) || null : null;
+      const res = this.invoke(user.fn, args, argExprs, user.thisVal, e.line, captured);
       if (user.receiver && res.thisOut && res.thisOut.obj) this.write(user.receiver, res.thisOut, env, f, e.line);
       user.fn.params.forEach((p, i) => {
         const a = argExprs[i];
@@ -715,7 +757,9 @@ class Interpreter {
       return V.CLEAN;
     }
 
-    const hit = this.cat.call ? this.cat.call(callee, args, e, this.ctxApi(env, f)) : null;
+    const api = this.ctxApi(env, f);
+    api.recv = recvVal;
+    const hit = this.cat.call ? this.cat.call(callee, args, e, api) : null;
     if (hit) return this.applyCatalogResult(hit, e, args, env, f);
 
     // unknown function: result depends on arguments, with lower confidence;
@@ -732,10 +776,12 @@ class Interpreter {
       const a = e.args[idx];
       if (a && (a.k === 'path' || a.k === 'list')) this.write(a, v, env, f, e.line);
     }
+    // methods that change their receiver (e.g. JavaScript's array.push)
+    if (hit.recvUpdate && e.recv && e.recv.k === 'path') this.write(e.recv, hit.recvUpdate, env, f, e.line);
     return hit.value || V.CLEAN;
   }
 
-  resolveUser(e, env, f) {
+  resolveUser(e, env, f, recvVal = null) {
     const callee = e.callee || '';
     if (callee.startsWith('fn:')) {
       const fn = this.findFunction(callee.slice(3).replace(/^\\/, '').split('\\').pop());
@@ -743,7 +789,7 @@ class Interpreter {
     }
     if (callee.startsWith('m:') && e.recv) {
       const name = callee.slice(2);
-      const recv = this.eval(e.recv, env, f);
+      const recv = recvVal || this.eval(e.recv, env, f);
       let fn = null;
       if (recv.obj && recv.obj.cls) {
         const def = this.findClass(recv.obj.cls);
@@ -773,14 +819,18 @@ class Interpreter {
     return null;
   }
 
-  invoke(fn, args, argExprs, thisVal, line) {
+  /**
+   * @param {Env|null} captured scope a closure was created in (JavaScript); its variables are
+   *   visible inside the function, parameters shadow them
+   */
+  invoke(fn, args, argExprs, thisVal, line, captured = null) {
     this.analyzed.add(fn);
     const fallback = () => {
       const joined = V.joinAll(args);
       return { ret: joined.t ? V.weaken(joined) : V.CLEAN, thisOut: thisVal, byRefOut: new Map() };
     };
     if (this.depth >= MAX_DEPTH || this.exhausted) return fallback();
-    const key = `${fn.id}#${signature(args)}#${signature([thisVal])}`;
+    const key = `${fn.id}#${signature(args)}#${signature([thisVal])}${captured ? `#${captureSignature(captured)}` : ''}`;
     if (this.memo.has(key)) {
       const cached = this.memo.get(key);
       // findings produced inside this function are reachable from the current entry point too
@@ -790,11 +840,13 @@ class Interpreter {
     this.memo.set(key, fallback()); // recursion guard
     const logStart = this.hitLog.length;
     const env = new Env();
+    if (captured) for (const [k, v] of captured.vars) env.vars.set(k, v);
+    const prefix = this.style.varPrefix !== undefined ? this.style.varPrefix : '$';
     fn.params.forEach((p, i) => {
       let v = args[i];
       if (p.variadic) v = V.joinAll(args.slice(i));
       if (v === undefined) v = p.def ? this.eval(p.def, env, { fn, file: fn.file }) : V.CLEAN;
-      env.vars.set(p.name, v && v.t ? V.step(v, line, `passed to ${fn.name}() as $${p.name}`) : v);
+      env.vars.set(p.name, v && v.t ? V.step(v, line, `passed to ${fn.name}() as ${prefix}${p.name}`) : v);
     });
     if (thisVal) env.vars.set('this', thisVal);
     const f = { fn, file: fn.file || this.p.file, ret: null, thisOut: null, byRefParams: fn.params.filter((p) => p.byRef).map((p) => p.name), byRefOut: new Map() };
@@ -820,8 +872,9 @@ class Interpreter {
     if (!value) return;
     let unsafe;
     if (sink.check === 'html') {
-      const res = contexts.html(value, env.out);
-      env.out = res.state;
+      // whole-response sinks (e.g. res.send) start a new HTML document
+      const res = contexts.html(value, sink.freshHtml ? contexts.initialHtmlState() : env.out);
+      if (!sink.freshHtml) env.out = res.state;
       unsafe = res.unsafe;
     } else if (!value.t) {
       return;
