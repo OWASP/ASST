@@ -47,7 +47,7 @@ But there are rules needs to be followed while improving it:
 # How to install and run it?
 To let ASST work 100%, you will need to install:
 1. localhost on your PC, we recommend (XAMPP).
-2. Node.js Engine v12.13.0
+2. Node.js Engine v18 or newer (the current LTS version is recommended)
 
 - The best usage of ASST is to run it directly on Online Production Server, and scan the project(s) in it. because ASST also checks Server's PHP and MySQL Versions if they are outdated or not.
 
@@ -72,11 +72,11 @@ Open browser, type: localhost/phpmyadmin, create empty database, import your pro
 
 ## 2. Node.js on Windows
 
-You must download a specific version of Node.js for windows from here: https://nodejs.org/en/blog/release/v12.13.0/ select (Windows 64-bit Installer), then download, Next, Next, Next and Finish.
+Download the current LTS version of Node.js (v18 or newer) for Windows from here: https://nodejs.org/en/download select (Windows Installer (.msi)), then download, Next, Next, Next and Finish.
 
-We are not keeping up with nodejs upgrades every month, so if you would like to test it on your own, you can download latest node.js version from here: https://nodejs.org/en/download/ choose (Windows Installer (.msi)), download and run it, Next, Next, Next and Finish.
+ASST is tested with Node.js 18, 20, 22 and 24 on Windows, Linux and macOS, so any of these versions works.
 
-###### PS: Downloading latest Node.js Engine may require you to update ASST's modules, so if you know what you are doing and you have time, and want to contribute, you can report your latest version of node.js and update modules and ask us to commit it on the repo if it works.
+###### PS: The installation videos show ASST v1.0.0 with Node.js v12.13.0. That release remains available as tag [v1.0.0](https://github.com/OWASP/ASST/releases/tag/v1.0.0); ASST v2 requires Node.js 18 or newer.
 
 ## 3. Run ASST on Windows
 
@@ -132,15 +132,15 @@ Open browser, type: localhost/phpmyadmin, create empty database, import your pro
 
 > $ sudo apt-get install npm -y
 
-You must set a specific version of Node.js to let ASST works without any problem.
+Make sure Node.js 18 or newer is active (check with: node -v). The "n" version manager installs the current LTS version:
 
 > $ sudo npm install n -g
 
-> $ sudo n 12.13.0
+> $ sudo n lts
 
-We are not keeping up with nodejs upgrades every month, so if you would like to test it on your own, you can ignore the last two commands of installing "n" using npm
+If node -v already shows v18 or newer, you can skip the last two commands.
 
-###### PS: Using latest Node.js Engine may require you to update ASST's modules, so if you know what you are doing and you have time, and want to contribute, you can report your latest version of node.js and update modules and ask us to commit it on the repo if it works.
+###### PS: The installation videos show ASST v1.0.0 with Node.js v12.13.0. That release remains available as tag [v1.0.0](https://github.com/OWASP/ASST/releases/tag/v1.0.0); ASST v2 requires Node.js 18 or newer.
 
 ## 3. Run ASST on Ubuntu
 
@@ -188,15 +188,15 @@ We used: brew (package system), Open Terminal:
 
 > $ sudo brew install node
 
-You must set a specific version of Node.js to let ASST works without any problem.
+Make sure Node.js 18 or newer is active (check with: node -v). The "n" version manager installs the current LTS version:
 
 > $ sudo npm install n -g
 
-> $ sudo n 12.13.0
+> $ sudo n lts
 
-We are not keeping up with nodejs upgrades every month, so if you would like to test it on your own, you can ignore the last two commands of installing "n" using npm
+If node -v already shows v18 or newer, you can skip the last two commands.
 
-###### PS: Using the latest Node.js Engine may require you to update ASST's modules, so if you know what you are doing and you have time, and want to contribute, you can report your latest version of node.js and update modules and ask us to commit it on the repo if it works.
+###### PS: The installation videos show ASST v1.0.0 with Node.js v12.13.0. That release remains available as tag [v1.0.0](https://github.com/OWASP/ASST/releases/tag/v1.0.0); ASST v2 requires Node.js 18 or newer.
 
 ## 3. Run ASST on MacOSX
 

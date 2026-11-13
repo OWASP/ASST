@@ -1,8 +1,11 @@
 {
   "name": "asst",
-  "version": "1.0.0",
+  "version": "2.0.0-dev",
   "description": "OWASP ASST (Automated Software Security Toolkit) | A Novel Open Source Web Security Scanner.",
   "main": "main.js",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "test": "node scripts/run-tests.js",
     "bench": "node bench/run.js --write-results",
@@ -36,7 +39,6 @@
   },
   "homepage": "https://github.com/OWASP/ASST#readme",
   "dependencies": {
-    "colors": "^1.4.0",
-    "sync-mysql": "^3.0.1"
+    "mysql2": "3.24.6"
   }
 }

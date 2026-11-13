@@ -13,7 +13,9 @@ module.exports = {
 	YOUR_WEBAPP_DBMS_DB_NAME: "your_project_database_name",
 	YOUR_WEBAPP_DBMS_USERNAME: "root",
 	YOUR_WEBAPP_DBMS_PASSWORD: "",
-	
+	// Optional (ASST v2): YOUR_WEBAPP_DBMS_PORT: 3306, // the password can also be given in the ASST_DB_PASSWORD environment variable instead of this file
+	// A read-only database user is enough: ASST only reads the length/prefix of stored passwords and salts, never the values themselves.
+
 	YOUR_WEBAPP_DBMS_USER_TABLE_NAME: "user",
 	YOUR_WEBAPP_DBMS_USER_TABLE_PASSWORD_COLUMN_NAME: "password_hash",
 	YOUR_WEBAPP_DBMS_USER_TABLE_SALT_COLUMN_NAME: "salt", // if not existed or used bcrypt or don't know what it is, leave it empty text: ""

@@ -24,6 +24,10 @@ function stripTags(s) {
   return s.replace(/<[^>]*>/g, '').trim();
 }
 
+function decodeEntities(s) {
+  return s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, '&');
+}
+
 function mapCwe(section, message) {
   const s = (section || '').toLowerCase();
   const msg = message;
@@ -71,10 +75,10 @@ function parseV1Report(html, datasetRoot) {
   const findings = [];
   let section = null;
   for (const raw of html.split(/<br\s*\/?>/i)) {
-    const sec = sectionOf(raw);
+    const sec = sectionOf(raw) || sectionOf(decodeEntities(raw));
     if (sec) { section = sec; continue; }
     if (!/color:\s*red/i.test(raw)) continue;
-    const text = stripTags(raw);
+    const text = decodeEntities(stripTags(raw));
     if (!text) continue;
     const parts = text.split(MESSAGE_SPLIT);
     let file = null;
