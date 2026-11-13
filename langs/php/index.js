@@ -37,10 +37,38 @@ function sinkLabel(sink) {
   return String(sink || '').replace(/^(fn|m|sm|new):/, '').replace(/^@/, '') + (/^(fn|m|sm):/.test(sink || '') ? '()' : '');
 }
 
+const CONTEXT_TEXT = {
+  "quoted '": 'inside a single-quoted string',
+  'quoted "': 'inside a double-quoted string',
+  'quoted `': 'inside a backtick-quoted identifier',
+  unquoted: 'outside any quotes',
+  html: 'in HTML text',
+  rcdata: 'inside a <textarea> or <title>',
+  'attr "': 'in a double-quoted HTML attribute',
+  "attr '": 'in a single-quoted HTML attribute',
+  'attr-unquoted': 'in an unquoted HTML attribute',
+  'url-attr "': 'as a link or resource URL',
+  "url-attr '": 'as a link or resource URL',
+  'js-string': 'inside a JavaScript string',
+  'js-string "': 'inside a JavaScript string',
+  "js-string '": 'inside a JavaScript string',
+  'js-code': 'as JavaScript code',
+  'js-attr "': 'inside an event-handler attribute',
+  "js-attr '": 'inside an event-handler attribute',
+  css: 'inside CSS',
+  tag: 'in a tag or attribute name',
+  comment: 'inside an HTML comment',
+  'whole URL': 'as the whole URL',
+  host: 'as the scheme or host of the URL',
+  path: 'in a file path',
+  filter: 'in an LDAP filter',
+  line: 'and may contain line breaks',
+};
+
 function taintMessage(meta, hit) {
   const src = hit.trace[0];
-  const via = hit.trace.slice(1).map((t) => t.note).filter(Boolean);
-  const where = hit.context && hit.context !== 'value' ? ` (${hit.context} context)` : '';
+  const via = hit.trace.slice(1).map((t) => t.note).filter((n) => n && !/^assigned to /.test(n));
+  const where = hit.context && CONTEXT_TEXT[hit.context] ? ` ${CONTEXT_TEXT[hit.context]}` : '';
   let msg = `${src ? `${src.note} (line ${src.line})` : 'User input'} reaches ${sinkLabel(hit.sink)}${where}`;
   if (via.length) msg += ` via ${via.slice(-3).join(', ')}`;
   msg += `. ${meta.summary}`;

@@ -8,6 +8,8 @@ const path = require('path');
 const FORMATS = {
   html: () => require('./html'),
   json: () => require('./json'),
+  sarif: () => require('./sarif'),
+  md: () => require('./markdown'),
 };
 
 /**

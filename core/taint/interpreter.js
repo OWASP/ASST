@@ -66,6 +66,11 @@ class Env {
   }
 }
 
+function pathText(t) {
+  if (!t || t.k !== 'path') return 'a variable';
+  return `$${t.base}${t.segs.map((s) => (s.prop !== undefined ? `->${s.prop}` : `[${s.key === null || s.key === '*' ? '' : JSON.stringify(s.key)}]`)).join('')}`;
+}
+
 function signature(values) {
   return values.map((v) => {
     if (!v) return '-';
@@ -129,7 +134,7 @@ class Interpreter {
         if (s.op === '.=') v = V.concat([this.read(s.target, env, f), v]);
         else if (s.op === '??=') v = V.join(this.read(s.target, env, f), v);
         else if (s.op && s.op !== '=') v = { t: false, num: true };
-        this.write(s.target, v, env, f, s.line);
+        this.write(s.target, v.t ? V.step(v, s.line, `assigned to ${pathText(s.target)}`) : v, env, f, s.line);
         break;
       }
       case 'expr':
