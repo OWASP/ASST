@@ -10,4 +10,5 @@ module.exports = {
 	// Optional settings (ASST v2). They can stay as they are; command-line options override them (node main.js --help).
 	EXCLUDE_PATHS: [], // folders/files to skip, e.g. ["tests/**", "*.min.js"] // vendor/ and node_modules/ are skipped by default
 	ONLINE_CHECKS: false, // true = check dependencies on OSV.dev and refresh end-of-life dates from endoflife.date (only package names and versions are sent; same as --online)
+	LIVE_SCAN_URL: "", // e.g. "http://localhost/ProjectFolderToScan/" = also check the running site with read-only GET/HEAD requests (same as --url) // localhost and private networks only
 };

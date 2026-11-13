@@ -38,6 +38,38 @@ session_start();
 
 Destroy the session on logout (`session_destroy()` after clearing `$_SESSION`), and expire idle sessions.
 
+## Session cookies {#session-cookies}
+
+The session cookie is as good as the password while the session lasts. Give it every protection the browser offers:
+
+- `HttpOnly`: JavaScript cannot read it, so an XSS flaw cannot simply copy the session.
+- `Secure`: it is only sent over HTTPS (switch it on once the site uses HTTPS).
+- `SameSite=Lax` (or `Strict`): other websites cannot send it along with their requests, which also blocks many CSRF attacks.
+
+In php.ini, for every application on the server:
+
+```ini
+session.cookie_httponly = 1
+session.cookie_secure = 1
+session.cookie_samesite = "Lax"
+session.use_strict_mode = 1
+session.use_only_cookies = 1
+```
+
+For your own cookies:
+
+```php
+setcookie('remember_me', $token, [
+    'expires' => time() + 60 * 60 * 24 * 30,
+    'path' => '/',
+    'secure' => true,
+    'httponly' => true,
+    'samesite' => 'Lax',
+]);
+```
+
+A `__Host-` name prefix (for example `__Host-session`) makes the browser reject the cookie unless it is `Secure`, has `Path=/` and no `Domain`.
+
 References: [OWASP Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html), [OWASP Authentication Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html).
 
 ## Credentials in source code {#credentials}

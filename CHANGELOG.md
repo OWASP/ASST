@@ -28,6 +28,18 @@ ASST 2.0 is a major upgrade built on the foundation of the original thesis relea
 
   Secrets are masked everywhere in the reports, including the code snippets of other findings.
 - `npm run update-data` refreshes the bundled lifecycle and advisory data. `--online` also refreshes lifecycle dates from endoflife.date during a scan.
+- Opt-in live checks of the running site with `--url http://localhost/YourProject/` (or `LIVE_SCAN_URL`). They report:
+  - missing security headers, version banners, and cookies without HttpOnly/Secure/SameSite;
+  - plain HTTP when HTTPS is available, and CORS origin reflection;
+  - PHP error output and directory listings;
+  - whether backups, dumps, `.env` files, `.git` data and manifests found by the static scan can actually be downloaded. Confirmed files are raised to critical.
+
+  The checks are read-only: GET and HEAD requests only, at most 60 requests at five per second, no cookies or form submissions, and no response content copied into reports. Only localhost and private networks are contacted, unless `--allow-remote` is given for a site you are authorized to test.
+- php.ini audit through the configured PHP binary. It covers:
+  - `display_errors`, `expose_php` and `allow_url_include`;
+  - session cookie and session id settings (`HttpOnly`, `SameSite`, `Secure`, `use_strict_mode`);
+  - optional hardening: `open_basedir`, `disable_functions`, `allow_url_fopen`, `zend.assertions`.
+- When ASST runs from an XAMPP `htdocs` folder, the report suggests the matching `--url` for the live checks.
 - Findings are mapped to the OWASP Top 10:2025 (with the 2021 category) and to CWE, and carry a severity, a confidence level and a code snippet.
 - Interactive HTML report: one self-contained file that works offline, with severity tiles, search, filters (severity, confidence, OWASP category), grouping by category/file/rule, code snippets with the line highlighted, data-flow traces, dark mode and print layout. Content is fully HTML-escaped and protected by a strict Content-Security-Policy.
 - SARIF 2.1.0 output (`--format sarif`) for GitHub code scanning and IDE viewers, with CWE/OWASP tags, security-severity scores, stable fingerprints and data-flow code flows.

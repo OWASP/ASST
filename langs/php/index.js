@@ -14,7 +14,7 @@ const { runAstRules } = require('./rules/ast-rules');
 const textRules = require('./rules/text-rules');
 const projectRules = require('./rules/project-rules');
 const { RULES, rule } = require('./rules/registry');
-const { phpRuntime, databaseChecks } = require('./runtime/checks');
+const { phpRuntime, phpLifecycleHits, databaseChecks } = require('./runtime/checks');
 const { PhpDatabase, normalizeDbConfig } = require('./runtime/db');
 const manualReview = require('./notices');
 const { loadGuides, pickGuides } = require('../../core/guides');
@@ -22,6 +22,7 @@ const frameworks = require('./frameworks');
 const { extend: extendCatalog } = require('./taint/catalog');
 const { scanSupplyChain } = require('../../core/supply');
 const secrets = require('../../core/secrets');
+const { runLiveChecks, maxSeverity } = require('../../core/live');
 const { createFinding, fingerprint, dedupe, compareFindings, atLeastSeverity, atLeastConfidence } = require('../../core/finding');
 const { applyInlineSuppressions, loadBaseline, writeBaseline, compareWithBaseline } = require('../../core/suppress');
 const { buildModel } = require('../../core/report/model');
@@ -240,6 +241,68 @@ module.exports = {
         }
       } else {
         notices.add('warning', `Database checks skipped: ${db.error}`);
+      }
+    }
+    if (runtime.hits.some((h) => /^PHP-INI-/.test(h.ruleId))) {
+      notices.add('info', `php.ini settings were read with the PHP command-line binary${runtime.env && runtime.env.iniFile ? ` (${runtime.env.iniFile})` : ''}. The web server can load a different php.ini; compare with phpinfo() on the server, then remove the phpinfo() page again.`);
+    }
+
+    // opt-in live checks against the running site (GET/HEAD only)
+    if (config.liveUrl) {
+      const exposed = raw.filter((f) => /^PHP-FILE-00[123]$/.test(f.ruleId) && f.file).map((f) => f.file);
+      const pages = phpFiles
+        .filter((pf) => /^(login|signin|sign-in|log-in|logon|account|auth)\.php$/i.test(path.posix.basename(pf.rel)) && /session_start\s*\(|setcookie\s*\(/.test(pf.text))
+        .map((pf) => pf.rel);
+      if (!config.quiet) console.log(ansi.paint(`Live checks: ${config.liveUrl} (read-only GET/HEAD requests)`, 'cyan'));
+      if (config.allowRemote) console.error(ansi.paint('--allow-remote: live checks may contact a non-local host. Only scan sites you own or are authorized to test.', 'yellow'));
+      const live = await runLiveChecks({ url: config.liveUrl, allowRemote: config.allowRemote, project, exposed, pages, notices, log: (m) => { if (!config.quiet) console.log(ansi.paint(m, 'yellow')); } });
+      if (live.info) environment.live = live.info;
+      for (const c of live.confirmedFiles) {
+        const match = c.file && raw.find((f) => /^PHP-FILE-00[123]$/.test(f.ruleId) && f.file === c.file);
+        if (match) {
+          match.severity = maxSeverity(match.severity, c.severity);
+          match.url = c.url;
+          match.message += ` Confirmed by the live check: ${c.url} can be downloaded (HTTP ${c.status}).`;
+        } else {
+          const finding = makeFinding('LIVE-FILE-001', {
+            severity: c.severity,
+            message: `A ${c.label} can be downloaded from ${c.url} (HTTP ${c.status}). Remove it from the web root or deny access to it in the web server configuration.`,
+          }, ctx);
+          finding.url = c.url;
+          raw.push(finding);
+        }
+      }
+      if (live.listings.length) {
+        const urls = live.listings.map((l) => l.url);
+        const listed = `${urls.slice(0, 5).join(', ')}${urls.length > 5 ? ` and ${urls.length - 5} more` : ''}`;
+        const staticHit = raw.find((f) => f.ruleId === 'PHP-HTA-001');
+        if (staticHit) {
+          staticHit.severity = maxSeverity(staticHit.severity, 'medium');
+          staticHit.url = urls[0];
+          staticHit.message += ` Confirmed by the live check: ${listed} ${urls.length === 1 ? 'shows' : 'show'} a file listing.`;
+        } else {
+          const finding = makeFinding('LIVE-LIST-001', { message: `The web server lists folder contents at ${listed}. Switch listings off (Apache: Options -Indexes).` }, ctx);
+          finding.url = urls[0];
+          raw.push(finding);
+        }
+      }
+      for (const h of live.hits) {
+        const finding = makeFinding(h.ruleId, h, ctx);
+        finding.url = h.url;
+        raw.push(finding);
+      }
+      if (live.info && live.info.php) {
+        if (!runtime.env) {
+          for (const h of phpLifecycleHits(live.info.php, new Date(), ' (reported by the web server)').hits) raw.push(makeFinding(h.ruleId, h, ctx));
+        } else if (runtime.env.php && runtime.env.php !== live.info.php) {
+          notices.add('info', `The web server runs PHP ${live.info.php}, while the command-line PHP used for the runtime checks is ${runtime.env.php}. Point PHP_EXE_BIN_PATH (or --php-bin) at the PHP that serves the site.`);
+        }
+      }
+    } else {
+      const inHtdocs = /[\\/]htdocs(?:[\\/](.*))?$/i.exec(project.root);
+      if (inHtdocs) {
+        const rel = (inHtdocs[1] || '').split(/[\\/]/).filter(Boolean).map(encodeURIComponent).join('/');
+        notices.add('info', `To also check the running site (security headers, cookies, downloadable files), start Apache and add --url http://localhost/${rel ? `${rel}/` : ''} to the command. Live checks only send read-only GET and HEAD requests.`);
       }
     }
     if (parseFailures.length) {

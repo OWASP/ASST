@@ -17,6 +17,24 @@ function commonRules(R) {
       'The package is marked as abandoned by its maintainers and will not receive fixes. Move to the suggested replacement.'),
     R('SECRET-001', 'Secret in source code', 'CWE-798', 'A07', 'A07', 'high', 'authentication#secrets', 'auth',
       'A password, API key, token or private key is stored in a project file. Move it to the environment or a secrets manager and rotate it.'),
+
+    // opt-in live checks against the running site (--url)
+    R('LIVE-HDR-001', 'Security headers missing', 'CWE-693', 'A02', 'A05', 'low', 'misconfiguration#security-headers', 'hardening',
+      'The site does not send browser security headers such as Content-Security-Policy, X-Content-Type-Options or frame protection.'),
+    R('LIVE-INFO-001', 'Server software versions disclosed', 'CWE-200', 'A02', 'A05', 'low', 'misconfiguration#information-disclosure', 'misconfig',
+      'Response headers or error pages announce web server and PHP versions, which helps attackers pick matching exploits.'),
+    R('LIVE-COOKIE-001', 'Cookie without security attributes', 'CWE-1004', 'A02', 'A05', 'medium', 'authentication#session-cookies', 'auth',
+      'A cookie is set without HttpOnly, Secure or SameSite, so scripts, plain-HTTP requests or other sites can use it.'),
+    R('LIVE-TLS-001', 'HTTP is not redirected to HTTPS', 'CWE-319', 'A04', 'A02', 'medium', 'cryptography#https', 'crypto',
+      'The site answers over plain HTTP although HTTPS is available, so passwords and cookies can travel unencrypted.'),
+    R('LIVE-CORS-001', 'Cross-origin requests allowed from any site', 'CWE-942', 'A01', 'A01', 'medium', 'access-control#cors', 'hardening',
+      'The server copies any Origin into Access-Control-Allow-Origin, so other websites can read its responses in a visitor\'s browser.'),
+    R('LIVE-LIST-001', 'Directory listing enabled', 'CWE-548', 'A02', 'A05', 'medium', 'misconfiguration#directory-listing', 'misconfig',
+      'The web server lists the files of folders that have no index page.'),
+    R('LIVE-FILE-001', 'Sensitive file can be downloaded', 'CWE-538', 'A02', 'A05', 'high', 'misconfiguration#exposed-files', 'hardening',
+      'A file that should not be public (backup, database dump, environment file, version-control data) is served by the web server.'),
+    R('LIVE-ERR-001', 'Error details shown in responses', 'CWE-209', 'A02', 'A05', 'medium', 'misconfiguration#error-handling', 'misconfig',
+      'Pages show PHP warnings or stack traces with file paths and code details.'),
   ];
 }
 

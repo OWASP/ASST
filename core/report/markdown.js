@@ -24,14 +24,14 @@ function render(model, { maxDetailed = 25 } = {}) {
   if (model.findings.length) {
     out.push('| Severity | Finding | Location | Rule |', '|---|---|---|---|');
     for (const f of model.findings.slice(0, maxDetailed)) {
-      const where = f.file ? `\`${cell(f.file)}${f.line ? `:${f.line}` : ''}\`` : 'project';
+      const where = f.file ? `\`${cell(f.file)}${f.line ? `:${f.line}` : ''}\`` : (f.url ? cell(f.url) : 'project');
       out.push(`| ${ICON[f.severity]} ${f.severity} | ${cell(f.title)}${f.baseline === 'new' ? ' **(new)**' : ''} | ${where} | ${cell(f.ruleId)} (${cell(f.cwe)}) |`);
     }
     if (model.findings.length > maxDetailed) out.push('', `…and ${model.findings.length - maxDetailed} more in the full report.`);
     out.push('');
     out.push('<details><summary>Details</summary>', '');
     for (const f of model.findings.slice(0, maxDetailed)) {
-      out.push(`#### ${ICON[f.severity]} ${cell(f.title)} - ${f.file ? `\`${cell(f.file)}${f.line ? `:${f.line}` : ''}\`` : 'project'}`, '');
+      out.push(`#### ${ICON[f.severity]} ${cell(f.title)} - ${f.file ? `\`${cell(f.file)}${f.line ? `:${f.line}` : ''}\`` : (f.url ? cell(f.url) : 'project')}`, '');
       out.push(f.message, '');
       if (f.trace && f.trace.length > 1) out.push(`Data flow: ${f.trace.map((t) => `line ${t.line} ${t.note}`).join(' → ')}`, '');
     }

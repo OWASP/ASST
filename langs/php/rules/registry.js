@@ -137,8 +137,18 @@ const RULES = [
     'Stored passwords use a general-purpose hash (MD5/SHA family) instead of password_hash().'),
   R('PHP-DB-003', 'Password salts are reused', 'CWE-760', 'A04', 'A02', 'medium', 'cryptography#password-storage', 'crypto',
     'Several rows share the same salt value.'),
+  R('PHP-INI-001', 'PHP configured to show errors to visitors', 'CWE-209', 'A02', 'A05', 'medium', 'misconfiguration#error-handling', 'misconfig',
+    'display_errors is on in php.ini, so warnings with file paths and code details reach the browser.'),
+  R('PHP-INI-002', 'PHP allows including code from URLs', 'CWE-98', 'A02', 'A05', 'high', 'misconfiguration#php-ini', 'misconfig',
+    'allow_url_include lets include and require load and run code from remote URLs.'),
+  R('PHP-INI-003', 'PHP version announced in responses', 'CWE-200', 'A02', 'A05', 'low', 'misconfiguration#information-disclosure', 'misconfig',
+    'expose_php adds the PHP version to every response (X-Powered-By header).'),
+  R('PHP-INI-004', 'Weak PHP session settings', 'CWE-1004', 'A07', 'A07', 'medium', 'authentication#session-cookies', 'auth',
+    'php.ini lets scripts read the session cookie or accepts session ids the server did not create.'),
+  R('PHP-INI-005', 'PHP hardening options not used', 'CWE-1188', 'A02', 'A05', 'low', 'misconfiguration#php-ini', 'misconfig',
+    'Optional php.ini restrictions (open_basedir, disable_functions, allow_url_fopen) are not used.'),
 
-  // dependencies and secrets (shared with other language plugins)
+  // dependencies, secrets and live checks (shared with other language plugins)
   ...commonRules(R),
 ];
 

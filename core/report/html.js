@@ -59,8 +59,8 @@ function guideHtml(model, f) {
 }
 
 function findingHtml(model, f, idx) {
-  const where = f.file ? `${f.file}${f.line ? `:${f.line}` : ''}` : 'Project';
-  const text = `${f.title} ${f.file || ''} ${f.message} ${f.ruleId} ${f.cwe || ''}`.toLowerCase();
+  const where = f.file ? `${f.file}${f.line ? `:${f.line}` : ''}` : (f.url || 'Project');
+  const text = `${f.title} ${f.file || ''} ${f.url || ''} ${f.message} ${f.ruleId} ${f.cwe || ''}`.toLowerCase();
   const links = [
     f.pdf ? `<a href="${esc(fileUrl(model, f.pdf))}" target="_blank" rel="noopener">Full guide (PDF)</a>` : '',
     f.cwe ? `<a href="${esc(cweLink(f.cwe))}" target="_blank" rel="noopener noreferrer">${esc(f.cwe)}</a>` : '',
@@ -203,6 +203,7 @@ function render(model) {
   if (env.php) envRows.push(`<li>PHP ${esc(env.php.php)}${env.php.phpLifecycle && env.php.phpLifecycle.eol ? ` (security support until ${esc(env.php.phpLifecycle.eol)})` : ''}, libxml ${esc(env.php.libxml || 'unknown')}</li>`);
   if (env.database) envRows.push(`<li>Database: ${esc(env.database.version)}</li>`);
   for (const ps of env.passwordStorage || []) envRows.push(`<li>Password storage in ${esc(ps.table)}: ${esc(ps.kind || ps.error)}</li>`);
+  if (env.live) envRows.push(`<li>Live checks: ${esc(env.live.url)} · ${esc(env.live.requests)} read-only requests (${esc((env.live.methods || []).join(', '))})${env.live.server ? ` · server: ${esc(env.live.server)}` : ''}</li>`);
   for (const [k, v] of Object.entries(env.frameworks || {})) envRows.push(`<li>Framework: ${esc(k)}${v ? ` ${esc(v)}` : ''}</li>`);
   const inv = model.inventory && model.inventory.packages ? model.inventory.packages : [];
   const invRows = inv.slice(0, 1000).map((c) => `<tr><td>${esc(c.name)}</td><td>${esc(c.version)}</td><td>${c.bundled ? 'bundled file' : c.dev ? 'dev dependency' : 'dependency'}</td><td class="where">${esc(c.file || '')}</td><td>${c.advisories === null || c.advisories === undefined ? '<span class="muted">-</span>' : c.advisories ? `<b>${esc(c.advisories)}</b>` : '0'}</td><td>${c.lifecycle === 'eol' ? '<b>end of life</b>' : esc(c.lifecycle || '')}</td></tr>`).join('');

@@ -20,7 +20,20 @@ Do not switch `display_errors` on from code (`ini_set('display_errors', '1')`). 
 
 ## Information disclosure {#information-disclosure}
 
-`phpinfo()` prints the full PHP configuration, environment variables and paths. Remove `phpinfo.php`, `info.php` and test scripts from deployed sites, and hide version banners (`expose_php = Off`, `ServerTokens Prod` in Apache).
+`phpinfo()` prints the full PHP configuration, environment variables and paths. Remove `phpinfo.php`, `info.php` and test scripts from deployed sites, and hide version banners:
+
+```apache
+# Apache (httpd.conf or httpd-default.conf)
+ServerTokens Prod
+ServerSignature Off
+```
+
+```ini
+; php.ini
+expose_php = Off
+```
+
+Hiding versions does not fix vulnerabilities, but it stops automated scanners from matching your exact versions to public exploits.
 
 ## XML external entities (XXE) {#xxe}
 
@@ -74,15 +87,62 @@ Options -Indexes
 
 With nginx, listing is off unless `autoindex on;` is set.
 
-Recommended response headers:
+## Security headers {#security-headers}
+
+Browsers enforce extra protections when the site asks for them with response headers. With Apache (`mod_headers`), in the virtual host or the web root `.htaccess`:
 
 ```apache
-Header always set X-Content-Type-Options "nosniff"
-Header always set Referrer-Policy "strict-origin-when-cross-origin"
-Header always set Content-Security-Policy "default-src 'self'; frame-ancestors 'self'"
+<IfModule mod_headers.c>
+    Header always set Content-Security-Policy "default-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'self'"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    # only on HTTPS sites:
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains"
+    Header always unset X-Powered-By
+</IfModule>
 ```
 
-References: [OWASP HTTP Headers Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html).
+- Start the Content-Security-Policy in report-only mode (`Content-Security-Policy-Report-Only`) to find inline scripts that need to move into files, then enforce it.
+- `frame-ancestors` (or `X-Frame-Options`) stops other sites from framing your pages (clickjacking).
+- The same headers can be sent from PHP with `header()` before any output.
+
+References: [OWASP HTTP Headers Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html), [OWASP Content Security Policy Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html).
+
+## PHP configuration (php.ini) {#php-ini}
+
+XAMPP and many development stacks ship a php.ini made for development. PHP itself includes `php.ini-production`, the recommended starting point for servers. Settings worth checking:
+
+```ini
+; errors: log them, never show them
+display_errors = Off
+display_startup_errors = Off
+log_errors = On
+expose_php = Off
+
+; never load code from URLs
+allow_url_include = Off
+; only if the application does not open URLs with file functions:
+allow_url_fopen = Off
+
+; sessions
+session.use_strict_mode = 1
+session.use_only_cookies = 1
+session.cookie_httponly = 1
+session.cookie_samesite = "Lax"
+session.cookie_secure = 1        ; when the site uses HTTPS
+
+; optional hardening
+open_basedir = "/var/www/site/:/tmp/"
+disable_functions = exec,passthru,shell_exec,system,proc_open,popen
+zend.assertions = -1
+```
+
+- ASST reads php.ini with the PHP command-line binary. The web server can load a different file (`php --ini` and `phpinfo()` show which one is used), so check the server's copy too, then remove any `phpinfo()` page.
+- Restart Apache or PHP-FPM after changing php.ini.
+
+References: [PHP manual: php.ini directives](https://www.php.net/manual/en/ini.list.php), [OWASP PHP Configuration Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/PHP_Configuration_Cheat_Sheet.html).
 
 ## Framework debug mode {#debug-mode}
 

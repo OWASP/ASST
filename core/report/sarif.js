@@ -73,6 +73,7 @@ function render(model) {
       result.locations = [];
       result.message.text = `[project] ${f.message}`;
     }
+    if (f.url) result.properties.url = f.url;
     if (f.baseline) result.baselineState = f.baseline === 'new' ? 'new' : 'unchanged';
     return result;
   });

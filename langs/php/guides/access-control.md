@@ -131,3 +131,27 @@ function myplugin_save() {
 ```
 
 In the form or script, send the nonce with `wp_nonce_field('myplugin_save')` or `wp_create_nonce('myplugin_save')`. Handlers registered with `wp_ajax_nopriv_*` are reachable by anyone, so validate their input carefully.
+
+## Cross-origin resource sharing (CORS) {#cors}
+
+Browsers stop other websites from reading your responses unless your server allows it with `Access-Control-Allow-Origin`. Copying the request's `Origin` header into that response header, especially together with `Access-Control-Allow-Credentials: true`, lets any website read pages and API answers with the visitor's cookies.
+
+```php
+// Vulnerable: every origin is trusted
+header('Access-Control-Allow-Origin: ' . $_SERVER['HTTP_ORIGIN']);
+header('Access-Control-Allow-Credentials: true');
+
+// Fixed: an explicit allow-list
+$allowed = ['https://app.example.com', 'https://admin.example.com'];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+if (in_array($origin, $allowed, true)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+    header('Access-Control-Allow-Credentials: true');
+    header('Vary: Origin');
+}
+```
+
+- Do not allow the `null` origin, and do not match origins with loose patterns (`endsWith('example.com')` also matches `evil-example.com`).
+- Public, cookie-free data may use `Access-Control-Allow-Origin: *`, never together with credentials.
+
+References: [OWASP HTML5 Security Cheat Sheet: CORS](https://cheatsheetseries.owasp.org/cheatsheets/HTML5_Security_Cheat_Sheet.html#cross-origin-resource-sharing).
