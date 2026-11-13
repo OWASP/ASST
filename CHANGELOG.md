@@ -6,6 +6,15 @@ All notable changes to OWASP ASST are documented in this file.
 
 ASST 2.0 is a major upgrade built on the foundation of the original thesis release.
 
+### Highlights
+
+- A data-flow engine follows user input through PHP and Node.js code, functions and files, and understands escaping and validation for each output context.
+- Findings are mapped to the OWASP Top 10:2025 and CWE. Each one has a severity, a confidence level, a code snippet and an embedded remediation guide.
+- Reports in HTML (interactive), JSON, SARIF and Markdown; CI exit codes, baselines, a GitHub Action and a Docker image.
+- Laravel, WordPress and Symfony support, and a Node.js/Express scanner.
+- Dependency, end-of-life and secrets checks, an optional OSV.dev lookup, read-only live checks of the running site, and a php.ini audit.
+- Benchmark results: F1 on the NIST SARD PHP sample rises from 35.6% to 66.5%, and on DVWA from 84.6% to 96.3%, while scans run several times faster.
+
 ### Added
 
 - Data-flow (taint) analysis for PHP. Every PHP file is parsed, and user input is followed from request sources to dangerous functions through variables, arrays, string building, `sprintf`, functions, methods and classes. Sanitizers and validation checks are understood per output context: SQL quoting, HTML text/attribute/script/URL, shell quoting, LDAP filters, XPath, file paths and URLs. Each finding shows the data-flow trace from source to sink.
@@ -62,6 +71,10 @@ ASST 2.0 is a major upgrade built on the foundation of the original thesis relea
 - Benchmark harness (`npm run bench`) that measures precision, recall and F1 per CWE on labeled PHP datasets: the ASST fixture corpus, DVWA, and the NIST SARD PHP Vulnerability Test Suite (42,212 cases), plus throughput on WordPress core.
 - Fixture corpus of vulnerable and safe PHP code samples covering 25 CWEs, used as ground truth for automated tests.
 - Automated test suite (`npm test`) and continuous integration on Windows, Linux and macOS with Node.js 18, 20, 22 and 24, including a check that the documented XAMPP installation layout keeps working.
+- GitHub Action (`uses: OWASP/ASST@v2.0.0`): scans the repository, uploads the SARIF report to code scanning, writes the Markdown summary to the job page and applies a `fail-on` threshold.
+- Docker image (`Dockerfile`): scans a project mounted at `/src` and writes the reports to `/out`, running as an unprivileged user.
+- `ASST_PATH`, `ASST_OUT`, `ASST_LANG`, `ASST_URL` and `ASST_NO_DB` environment variables for containers and CI, and an `asst` command when ASST is installed as a package.
+- `CONTRIBUTING.md` (rule authoring, the data-flow engine, adding a language) and `SECURITY.md` (vulnerability reporting, and what ASST does on your machine).
 
 ### Improved
 
@@ -71,15 +84,19 @@ ASST 2.0 is a major upgrade built on the foundation of the original thesis relea
 - Redirect checks recognize every way a script stops (`exit;`, `die;`, `return`, `throw`).
 - CSRF checks focus on POST forms and recognize framework token helpers.
 - XML checks focus on the parser options that enable external entities on current PHP versions.
-- Benchmark results (see `bench/RESULTS.md`): on the NIST SARD PHP sample, F1 rises from 35.6% to 66.5% while scanning about 15 times faster; on DVWA, F1 rises from 84.6% to 96.3% with 100% precision. WordPress core (1,500 PHP files) is scanned in about 12 seconds.
+- Benchmark results (see `bench/RESULTS.md`):
+  - NIST SARD PHP sample: F1 rises from 35.6% to 66.5%;
+  - DVWA: F1 rises from 84.6% to 96.3%, with 100% precision.
 - DOM-based XSS checks focus on real browser sources (URL, referrer, window name, cross-window messages) and skip minified third-party bundles.
-- About 10x faster scans: the project tree is walked once and every file is read once per scan (NIST SARD sample: 97 s to 9 s; DVWA: 10 s to 1 s).
+- Faster scans: the project tree is walked once, and every file is read and parsed once. Measured times (see `bench/RESULTS.md`):
+  - NIST SARD sample: 3 s instead of 57 s;
+  - DVWA: under 1 s instead of 6 s;
+  - WordPress core (about 1,500 PHP files): under 20 seconds.
 - Dependency folders (`vendor/`, `node_modules/`, `bower_components/`) and version-control folders are skipped by default.
 - Paths are resolved relative to the ASST folder: ASST can be started from any directory, the folder may keep the name `ASST-main`, and `DEFAULT_PROJECT_PATH_TO_SCAN` accepts absolute paths on every operating system.
 - The report is a complete, HTML-escaped document, and its links to the remediation guides are standard `file://` URLs that open on Windows, Linux and macOS.
 - Database checks use a single connection, escaped identifiers and aggregate queries, and only ever read the length and prefix of stored password hashes, never the hashes themselves. MySQL 8 authentication is supported.
 - A missing PHP binary or an unreachable database now produces a short note in the summary and the rest of the scan continues.
-
 - The eleven PDF/DOCX guides were revised for PHP 8 and the OWASP Top 10:2025, covering prepared statements with PDO settings, per-argument shell escaping, context-aware output encoding, `password_hash()`-based password storage, HTTPS and HSTS configuration, current XML parser defaults, SSRF allow-lists, modern MongoDB and logging examples, and links to the 2025 categories.
 
 ### Changed
@@ -89,7 +106,10 @@ ASST 2.0 is a major upgrade built on the foundation of the original thesis relea
 
 ### Compatibility
 
-- `config.js` and `config_php_lang.js` files from v1.0 work unchanged; all existing settings keep their meaning.
+- The installation steps stay the same: the ASST folder next to the project in `htdocs`, `npm install`, then `node main.js`, `ASST.bat` or `ASST.sh`. The only new requirement is Node.js 18 or newer.
+- `config.js` and `config_php_lang.js` files from v1.0 work unchanged; all existing settings keep their meaning, and every new setting is optional.
+- Running `node main.js` without options scans the configured folder with the PHP scanner, writes `report.html` next to `main.js` (still linking the PDF guides) and exits with code 0. Non-zero exit codes are used only with `--fail-on`, or when the scan cannot run.
+- ASST v1.0.0, shown in the installation videos, stays available as the `v1.0.0` tag.
 
 ## [1.0.0] - Original thesis release
 

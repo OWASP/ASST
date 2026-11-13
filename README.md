@@ -24,6 +24,24 @@ When ASST scans for a project it checks each and every file line by line for sec
 
 ASST's results are showed as HTML Report linked with PDF files to explain each attack and its protection mechanism.
 
+# What's new in ASST v2
+
+ASST v2 is a major upgrade built on the foundation of v1.0.0, the original thesis release that introduced the educational report approach. Highlights:
+
+- **Data-flow analysis:** PHP and Node.js code is parsed, and user input is followed from request sources through variables, functions, classes and files to dangerous functions. Escaping and validation are understood for the place a value ends up in (SQL, HTML, shell, file paths, URLs). Every finding shows the path the data takes.
+- **OWASP Top 10:2025:** every finding carries the 2025 category (with the 2021 one), its CWE, a severity and a confidence level. The remediation guides are refreshed for PHP 8 and current Node.js practice.
+- **Reports for people and pipelines:** an interactive HTML report, plus JSON, SARIF (GitHub code scanning) and Markdown output, baselines and CI exit codes.
+- **Frameworks and languages:** Laravel, WordPress and Symfony support, and a Node.js/Express scanner.
+- **Software supply chain:**
+  - dependencies from lock files and JavaScript libraries copied into the project;
+  - end-of-life runtimes and frameworks;
+  - optional OSV.dev lookups;
+  - secrets detection with masked output.
+- **Running systems:** opt-in, read-only live checks of the running site and a php.ini audit.
+- **Tooling:** a GitHub Action, a Docker image and a benchmark harness (DVWA, NIST SARD, WordPress).
+
+The installation steps below stay the same; ASST v2 needs Node.js 18 or newer. Configuration files from v1.0 keep working. See [CHANGELOG.md](CHANGELOG.md) for the complete list and [CONTRIBUTING.md](CONTRIBUTING.md) to add rules or languages.
+
 # How to Contribute?
 - ASST can be easily extended to support other programming languages that may be scanned for vulnerabilities. The project is open source therefore, programmers with expertise in cyber security can contribute or fork the toolkit and add features. Other programming languages such as Python, C#, Java or Node.js itself can be added to be scanned for vulnerabilities as backend server code.
 
@@ -206,6 +224,125 @@ Run this command once to install node_modules for this project:
 To run ASST, default command:
 
 > $ sudo node /Applications/XAMPP/htdocs/ASST/main.js
+
+# Using ASST v2
+
+Running `node main.js` (or `ASST.bat` / `ASST.sh`) works exactly as shown in the videos: ASST scans the folder set in `config.js` and writes `report.html` next to `main.js`. Everything below is optional.
+
+## Command-line options
+
+| Option | Purpose |
+|---|---|
+| `--path <folder>` | Folder to scan (instead of `DEFAULT_PROJECT_PATH_TO_SCAN`) |
+| `--lang php\|nodejs\|auto` | Scanner to use (default: `USED_PROGRAMMING_LANGUAGE`, which is `php`) |
+| `--format html,json,sarif,md` | Report formats to write |
+| `--out <folder or file.html>` | Where the reports are written |
+| `--min-severity <level>`, `--min-confidence <level>` | Reporting thresholds (default confidence: medium) |
+| `--fail-on <severity>` | Exit with code 1 when a finding reaches this severity (for CI) |
+| `--exclude <glob>`, `--include-vendor` | Skip paths, or also scan `vendor/` and `node_modules/` |
+| `--rules <prefixes>`, `--disable-rules <prefixes>` | Run only some rules, or skip some (for example `PHP-XSS`) |
+| `--baseline <file>`, `--update-baseline <file>` | Compare with an earlier scan, or record the current findings |
+| `--second-order` | Also treat stored data (database rows, session, files) as untrusted |
+| `--online` | Check dependencies on OSV.dev and refresh lifecycle dates (see the privacy note below) |
+| `--url <url>`, `--allow-remote` | Opt-in live checks of the running site |
+| `--no-db`, `--php-bin <path>` | Skip the database checks, or choose the PHP binary for the runtime checks |
+| `--quiet`, `--no-color`, `--version`, `--help` | Output control |
+
+Run `node main.js --help` for the complete list. Most options can also be set in `config.js` or with `ASST_*` environment variables.
+
+Exit codes:
+- `0`: the scan completed;
+- `1`: there are findings at or above `--fail-on`;
+- `2`: the scan could not run.
+
+## Reports
+
+- `report.html`: an interactive report that works offline: search, filters, grouping, code snippets, data-flow traces, the matching remediation guide section, dark mode and print layout. The PDF guides are linked as before.
+- `report.json`: machine-readable results (schema `asst-report/1`).
+- `report.sarif`: SARIF 2.1.0 for GitHub code scanning and IDE viewers.
+- `report.md`: a Markdown summary for pull requests and CI job summaries.
+
+## Continuous integration and the GitHub Action
+
+```yaml
+name: ASST
+on: [push, pull_request]
+permissions:
+  contents: read
+  security-events: write
+jobs:
+  asst:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: OWASP/ASST@v2.0.0
+        with:
+          path: .
+          language: auto
+          fail-on: high
+```
+
+The action installs ASST, scans the repository, uploads the SARIF report to code scanning and adds the Markdown summary to the job page. Inputs: `path`, `language`, `fail-on` (or `none`), `min-confidence`, `formats`, `output`, `upload-sarif`, `online` and `extra-args`. In other CI systems, run `npm ci` in the ASST folder and then `node main.js --path <project> --format sarif,md --fail-on high`.
+
+## Node.js projects
+
+Set `USED_PROGRAMMING_LANGUAGE: "nodejs"` in `config.js`, or run `node main.js --lang nodejs --path ../my-express-app`. ASST checks:
+- the JavaScript and TypeScript code of Express-style applications;
+- templates: EJS, Handlebars, Pug, Nunjucks and Vue;
+- dependencies and configuration.
+
+`--lang auto` chooses the scanner from the project's files.
+
+## Live checks (authorized use only)
+
+`node main.js --url http://localhost/YourProject/` also checks the running site:
+- security headers, cookies, version banners, the HTTPS redirect and CORS;
+- PHP error output and directory listings;
+- whether backups, database dumps, `.env` files or `.git` data found in the code can actually be downloaded.
+
+The checks are read-only. They send GET and HEAD requests only (at most 60, five per second) and never submit forms. They contact only localhost and private networks unless `--allow-remote` is given. Only scan sites you own or are explicitly authorized to test.
+
+## Dependencies, secrets and privacy
+
+ASST lists the packages from `composer.lock`, `package-lock.json` and `yarn.lock`, and recognizes JavaScript libraries copied into the project. Advisories for common front-end libraries and the end-of-life dates ship with ASST, so no network access is needed.
+
+With `--online` (or `ONLINE_CHECKS: true`), ASST also:
+- asks [OSV.dev](https://osv.dev) about every package;
+- refreshes lifecycle dates from [endoflife.date](https://endoflife.date).
+
+Only package names, versions and product names are sent, and the answers are cached in `.asst-cache/` for a day.
+
+Secrets (API keys, tokens, private keys, passwords) are reported with masked values. The secret itself never appears in a report.
+
+## Docker
+
+```bash
+docker build -t asst .
+docker run --rm -v "$PWD:/src:ro" -v "$PWD/asst-out:/out" asst
+docker run --rm -v "$PWD:/src:ro" -v "$PWD/asst-out:/out" asst --lang nodejs --format html,sarif --fail-on high
+```
+
+The container scans `/src`, writes the reports to `/out` and runs as an unprivileged user. Database and PHP runtime checks are switched off inside the container. The PDF guide links in the HTML report point to the container's copy; the Markdown guide sections are embedded in the report itself.
+
+## Suppressing findings
+
+- **Inline:** add `asst-ignore[RULE-ID] reason` in a comment on the reported line or on the line above it.
+- **Paths:** list globs in `.asstignore` or `EXCLUDE_PATHS`, or use `--exclude`.
+- **Baselines:** `--update-baseline asst-baseline.json` records the current findings. Later scans with `--baseline asst-baseline.json` mark findings as new or unchanged and list the fixed ones.
+
+## Good to know
+
+- On Windows, the first scan of a large project can take noticeably longer than later ones, while the antivirus checks each file for the first time.
+- The PHP runtime checks use the PHP binary set in `config_php_lang.js` (XAMPP by default). The web server can load a different `php.ini`, so the report says which file was checked.
+- Benchmark results for DVWA, the NIST SARD PHP suite and WordPress are in [bench/RESULTS.md](bench/RESULTS.md).
+
+## Limitations
+
+Static analysis cannot prove that code is free of vulnerabilities. ASST follows data through the code it can see, so some cases can be missed:
+- values passed through variable variables, magic methods, reflection, generated code or external services;
+- access-control and business-logic flaws, which need manual review (the report lists what to check).
+
+Some findings may need a second look, which is why each one has a confidence level. Templates are checked for unescaped output rather than fully parsed. The Node.js scanner covers Express-style frameworks; Koa, NestJS decorators and Next.js API routes are not modeled yet.
 
 # Special Thanks
 

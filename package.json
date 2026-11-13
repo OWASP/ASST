@@ -1,11 +1,29 @@
 {
   "name": "asst",
-  "version": "2.0.0-dev",
+  "version": "2.0.0",
   "description": "OWASP ASST (Automated Software Security Toolkit) | A Novel Open Source Web Security Scanner.",
   "main": "main.js",
+  "bin": {
+    "asst": "main.js"
+  },
   "engines": {
     "node": ">=18"
   },
+  "files": [
+    "main.js",
+    "config.js",
+    "config_php_lang.js",
+    "core/",
+    "langs/",
+    "data/",
+    "action.yml",
+    "ASST.bat",
+    "ASST.sh",
+    "README.md",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "LICENSE.md"
+  ],
   "scripts": {
     "test": "node scripts/run-tests.js",
     "bench": "node bench/run.js --write-results",
@@ -31,7 +49,13 @@
     "security-assessments",
     "web-vulnerability-scanners",
     "asst",
-    "security-assesment-security-tools"
+    "security-assesment-security-tools",
+    "php",
+    "nodejs",
+    "express",
+    "sast",
+    "sarif",
+    "static-analysis"
   ],
   "author": "Tarik Seyceri",
   "license": "MIT",

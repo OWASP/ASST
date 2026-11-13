@@ -76,7 +76,7 @@ function loadConfig(cli = {}, env = process.env, root = ASST_ROOT) {
   const unknown = formats.filter((f) => !FORMATS.includes(f));
   if (unknown.length) throw new ConfigError(`Unknown report format(s): ${unknown.join(', ')}. Supported: ${FORMATS.join(', ')}.`);
 
-  const outputs = resolveOutputs(root, cli.out, user.HTML_REPORT_FILE_NAME_AND_PATH);
+  const outputs = resolveOutputs(root, cli.out || env.ASST_OUT, user.HTML_REPORT_FILE_NAME_AND_PATH);
 
   const config = {
     asstRoot: root,
@@ -105,7 +105,7 @@ function loadConfig(cli = {}, env = process.env, root = ASST_ROOT) {
     jobs: cli.jobs ? Number(cli.jobs) : null,
     quiet: Boolean(cli.quiet),
     color: cli.color !== false,
-    noDb: Boolean(cli.noDb),
+    noDb: Boolean(cli.noDb || /^(1|true|yes)$/i.test(String(env.ASST_NO_DB || ''))),
     phpBin: cli.phpBin,
     user,
     languageConfig: {},

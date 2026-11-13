@@ -16,3 +16,10 @@ bench/.work/
 
 # ASST cache (--online lookups)
 .asst-cache/
+
+# Report files written next to main.js or in CI
+report.json
+report.sarif
+report.md
+asst-out/
+asst-results/

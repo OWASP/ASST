@@ -1,6 +1,6 @@
 # ASST benchmark results
 
-Generated 2026-11-13T15:05:06.101Z on win32-x64, Node 22.23.5. Findings counted at confidence ≥ medium. Reproduce with `npm run bench`.
+Generated 2026-11-13T18:50:58.195Z on win32-x64, Node 22.23.5. Findings counted at confidence ≥ medium. Reproduce with `npm run bench`.
 
 Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = harmonic mean (percent).
 
@@ -8,8 +8,8 @@ Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = harmonic mean (percent).
 
 | Version | Precision | Recall | F1 | TP | FP | FN | Time (s) | Files/s | Peak RSS (MB) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| v1.0 (line-based engine) | 19.0 | 30.8 | 23.5 | 12 | 51 | 27 | 0.8 | 78 | 55 |
-| v2 (current branch) | 100.0 | 100.0 | 100.0 | 39 | 0 | 0 | 0.3 | 208 | 61 |
+| v1.0 (line-based engine) | 19.0 | 30.8 | 23.5 | 12 | 51 | 27 | 1.4 | 47 | 60 |
+| v2 (current branch) | 100.0 | 100.0 | 100.0 | 39 | 0 | 0 | 0.3 | 189 | 69 |
 
 | CWE | v1.0 (line-based engine) P / R / F1 | v2 (current branch) P / R / F1 |
 |---|---:|---:|
@@ -41,8 +41,8 @@ Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = harmonic mean (percent).
 
 | Version | Precision | Recall | F1 | TP | FP | FN | Time (s) | Files/s | Peak RSS (MB) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| v1.0 (line-based engine) | 41.2 | 41.2 | 41.2 | 7 | 10 | 10 | 0.2 | 104 | 54 |
-| v2 (current branch) | 100.0 | 100.0 | 100.0 | 17 | 0 | 0 | 0.2 | 90 | 57 |
+| v1.0 (line-based engine) | 41.2 | 35.0 | 37.8 | 7 | 10 | 13 | 0.2 | 68 | 59 |
+| v2 (current branch) | 100.0 | 100.0 | 100.0 | 20 | 0 | 0 | 0.3 | 46 | 66 |
 
 | CWE | v1.0 (line-based engine) P / R / F1 | v2 (current branch) P / R / F1 |
 |---|---:|---:|
@@ -58,13 +58,15 @@ Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = harmonic mean (percent).
 | CWE-798 | – / 0.0 / 0.0 | 100.0 / 100.0 / 100.0 |
 | CWE-916 | – / 0.0 / 0.0 | 100.0 / 100.0 / 100.0 |
 | CWE-918 | – / 0.0 / 0.0 | 100.0 / 100.0 / 100.0 |
+| CWE-1104 | – / 0.0 / 0.0 | 100.0 / 100.0 / 100.0 |
+| CWE-1395 | – / 0.0 / 0.0 | 100.0 / 100.0 / 100.0 |
 
 ## dvwa
 
 | Version | Precision | Recall | F1 | TP | FP | FN | Time (s) | Files/s | Peak RSS (MB) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| v1.0 (line-based engine) | 91.7 | 78.6 | 84.6 | 11 | 1 | 3 | 5.5 | 46 | 70 |
-| v2 (current branch) | 100.0 | 92.9 | 96.3 | 13 | 0 | 1 | 0.6 | 433 | 102 |
+| v1.0 (line-based engine) | 91.7 | 78.6 | 84.6 | 11 | 1 | 3 | 5.8 | 43 | 75 |
+| v2 (current branch) | 100.0 | 92.9 | 96.3 | 13 | 0 | 1 | 0.7 | 374 | 111 |
 
 | CWE | v1.0 (line-based engine) P / R / F1 | v2 (current branch) P / R / F1 |
 |---|---:|---:|
@@ -80,8 +82,8 @@ Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = harmonic mean (percent).
 
 | Version | Precision | Recall | F1 | TP | FP | FN | Time (s) | Files/s | Peak RSS (MB) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| v1.0 (line-based engine) | 28.1 | 48.6 | 35.6 | 300 | 769 | 317 | 54.2 | 37 | 85 |
-| v2 (current branch) | 73.4 | 60.8 | 66.5 | 375 | 136 | 242 | 2.5 | 802 | 125 |
+| v1.0 (line-based engine) | 28.1 | 48.6 | 35.6 | 300 | 769 | 317 | 57.1 | 35 | 92 |
+| v2 (current branch) | 73.4 | 60.8 | 66.5 | 375 | 136 | 242 | 3.0 | 660 | 133 |
 
 | CWE | v1.0 (line-based engine) P / R / F1 | v2 (current branch) P / R / F1 |
 |---|---:|---:|
@@ -102,7 +104,7 @@ Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = harmonic mean (percent).
 
 | Version | Precision | Recall | F1 | TP | FP | FN | Time (s) | Files/s | Peak RSS (MB) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| v2 (current branch) | – | – | – | – | – | – | 12.5 | 303 | 547 |
+| v2 (current branch) | – | – | – | – | – | – | 16.5 | 229 | 589 |
 
 ## Notes
 

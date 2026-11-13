@@ -1,0 +1,110 @@
+name: 'OWASP ASST security scan'
+description: 'Scan PHP and Node.js projects for OWASP Top 10:2025 issues and report them in GitHub code scanning.'
+author: 'OWASP ASST'
+branding:
+  icon: 'shield'
+  color: 'green'
+
+inputs:
+  path:
+    description: 'Folder to scan, relative to the repository root.'
+    required: false
+    default: '.'
+  language:
+    description: 'Scanner to use: php, nodejs or auto.'
+    required: false
+    default: 'auto'
+  fail-on:
+    description: 'Fail the job when a finding has at least this severity (critical, high, medium, low or info). Use "none" to never fail.'
+    required: false
+    default: 'high'
+  min-confidence:
+    description: 'Lowest confidence that is reported: high, medium or low.'
+    required: false
+    default: 'medium'
+  formats:
+    description: 'Report formats to write (html, json, sarif, md).'
+    required: false
+    default: 'sarif,md,html,json'
+  output:
+    description: 'Folder for the report files.'
+    required: false
+    default: 'asst-results'
+  upload-sarif:
+    description: 'Upload the SARIF report to GitHub code scanning (needs the security-events: write permission).'
+    required: false
+    default: 'true'
+  online:
+    description: 'Check dependencies against OSV.dev (only package names and versions are sent).'
+    required: false
+    default: 'false'
+  extra-args:
+    description: 'Additional command-line options, for example "--exclude tests/** --rules PHP-SQLI".'
+    required: false
+    default: ''
+
+outputs:
+  sarif:
+    description: 'Path of the SARIF report.'
+    value: ${{ steps.scan.outputs.sarif }}
+  exit-code:
+    description: '0 = below the fail-on threshold, 1 = findings at or above it, 2 = the scan could not run.'
+    value: ${{ steps.scan.outputs.exit-code }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+      with:
+        node-version: '22'
+
+    - name: Install ASST
+      shell: bash
+      run: npm ci --omit=dev --ignore-scripts --no-audit --no-fund --prefix "$GITHUB_ACTION_PATH"
+
+    - name: Scan with ASST
+      id: scan
+      shell: bash
+      env:
+        ASST_INPUT_PATH: ${{ inputs.path }}
+        ASST_INPUT_LANGUAGE: ${{ inputs.language }}
+        ASST_INPUT_FAIL_ON: ${{ inputs.fail-on }}
+        ASST_INPUT_MIN_CONFIDENCE: ${{ inputs.min-confidence }}
+        ASST_INPUT_FORMATS: ${{ inputs.formats }}
+        ASST_INPUT_OUTPUT: ${{ inputs.output }}
+        ASST_INPUT_ONLINE: ${{ inputs.online }}
+        ASST_INPUT_EXTRA_ARGS: ${{ inputs.extra-args }}
+      run: |
+        formats="$ASST_INPUT_FORMATS"
+        case ",$formats," in *,sarif,*) ;; *) formats="$formats,sarif" ;; esac
+        args=(--path "$ASST_INPUT_PATH" --lang "$ASST_INPUT_LANGUAGE" --format "$formats" --out "$ASST_INPUT_OUTPUT" \
+              --min-confidence "$ASST_INPUT_MIN_CONFIDENCE" --no-db --php-bin "" --no-color)
+        if [ "$ASST_INPUT_FAIL_ON" != "none" ] && [ -n "$ASST_INPUT_FAIL_ON" ]; then args+=(--fail-on "$ASST_INPUT_FAIL_ON"); fi
+        if [ "$ASST_INPUT_ONLINE" = "true" ]; then args+=(--online); fi
+        read -r -a extra <<< "$ASST_INPUT_EXTRA_ARGS"
+        set +e
+        node "$GITHUB_ACTION_PATH/main.js" "${args[@]}" "${extra[@]}"
+        code=$?
+        set -e
+        echo "exit-code=$code" >> "$GITHUB_OUTPUT"
+        echo "sarif=$ASST_INPUT_OUTPUT/report.sarif" >> "$GITHUB_OUTPUT"
+        if [ -f "$ASST_INPUT_OUTPUT/report.md" ]; then cat "$ASST_INPUT_OUTPUT/report.md" >> "$GITHUB_STEP_SUMMARY"; fi
+        if [ "$code" = "2" ]; then echo "::error title=ASST::The scan could not run (exit code 2)."; exit 2; fi
+        exit 0
+
+    - name: Upload SARIF to code scanning
+      if: ${{ inputs.upload-sarif == 'true' && steps.scan.outputs.exit-code != '2' }}
+      uses: github/codeql-action/upload-sarif@9b3254085494b55a0f7c4c2b3d2d52cc712ce370 # v4.39.1
+      with:
+        sarif_file: ${{ steps.scan.outputs.sarif }}
+        category: owasp-asst
+
+    - name: Apply the fail-on threshold
+      if: ${{ steps.scan.outputs.exit-code == '1' }}
+      shell: bash
+      env:
+        ASST_INPUT_FAIL_ON: ${{ inputs.fail-on }}
+      run: |
+        echo "::error title=ASST::Findings with severity $ASST_INPUT_FAIL_ON or higher were reported. See the code scanning alerts or the job summary."
+        exit 1

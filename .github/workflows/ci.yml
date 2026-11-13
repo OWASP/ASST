@@ -55,6 +55,31 @@ jobs:
       - name: Precision/recall regression gate
         run: npm run bench:ci
 
+  action:
+    name: GitHub Action (composite, runs from this repository)
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Scan the vulnerable PHP fixture with the action
+        id: asst
+        uses: ./
+        with:
+          path: test/fixtures/php-vulnerable-app
+          language: php
+          fail-on: none
+          upload-sarif: 'false'
+          output: asst-results
+      - name: Check the action outputs
+        env:
+          SARIF: ${{ steps.asst.outputs.sarif }}
+          CODE: ${{ steps.asst.outputs.exit-code }}
+        run: |
+          test "$CODE" = "0"
+          test -s "$SARIF"
+          test -s asst-results/report.html
+          node -e "const s=JSON.parse(require('fs').readFileSync(process.env.SARIF,'utf8')); const n=s.runs[0].results.length; if (n < 10) throw new Error('only ' + n + ' results'); console.log(n + ' results');"
+
   nightly:
     name: nightly (full SARD suite + WordPress throughput)
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
