@@ -9,7 +9,7 @@
  *   runtime        -> PHP/libxml versions, database password storage and version
  */
 const path = require('path');
-const { analyzeFile } = require('./taint');
+const { analyzeProject } = require('./taint');
 const { runAstRules } = require('./rules/ast-rules');
 const textRules = require('./rules/text-rules');
 const projectRules = require('./rules/project-rules');
@@ -126,6 +126,7 @@ module.exports = {
 
     if (!config.quiet) console.log(ansi.paint(`Scanning ${project.files.length} files in ${project.root}`, 'cyan'));
 
+    const phpFiles = [];
     for (const file of project.files) {
       const isPhp = EXTENSIONS.includes(file.ext);
       const needsText = isPhp || textRules.TEMPLATE_EXT.has(file.ext) || ['js', 'mjs', 'cjs', 'css'].includes(file.ext);
@@ -134,27 +135,35 @@ module.exports = {
       if (text === null) continue;
       const lines = cache.lines(file.abs);
       stats.filesAnalyzed++;
-      if (isPhp) {
-        const res = analyzeFile(text, file.rel, options);
-        stats.parse[res.status === 'failed' ? 'failed' : res.status]++;
-        for (const hit of res.hits) {
-          const meta = rule(hit.rule);
-          raw.push(makeFinding(hit.rule, {
-            file: file.rel, line: hit.line, column: hit.col, confidence: CONF[hit.conf] || 'low',
-            message: taintMessage(meta, hit), trace: hit.trace,
-          }, ctx));
-        }
-        if (res.ast) {
-          for (const h of runAstRules(res.ast)) raw.push(makeFinding(h.ruleId, { ...h, file: file.rel }, ctx));
-        } else {
-          parseFailures.push(`${file.rel} (${res.error})`);
-          for (const h of textRules.phpFallback(lines)) raw.push(makeFinding(h.ruleId, { ...h, file: file.rel }, ctx));
-        }
-      }
+      if (isPhp) phpFiles.push({ rel: file.rel, text });
       for (const h of textRules.csrfForms(file, text)) raw.push(makeFinding(h.ruleId, { ...h, file: file.rel }, ctx));
       for (const h of textRules.domRules(file, text)) raw.push(makeFinding(h.ruleId, { ...h, file: file.rel }, ctx));
       for (const h of textRules.httpUrls(file, lines)) raw.push(makeFinding(h.ruleId, { ...h, file: file.rel, confidence: 'medium' }, ctx));
     }
+
+    // PHP: parse every file once, run the structural rules, then follow data across the project
+    const taint = analyzeProject(phpFiles, options, (rel, ast, parsed) => {
+      stats.parse[parsed.status === 'failed' ? 'failed' : parsed.status]++;
+      if (ast) {
+        for (const h of runAstRules(ast)) raw.push(makeFinding(h.ruleId, { ...h, file: rel }, ctx));
+      } else {
+        parseFailures.push(`${rel} (${parsed.error})`);
+        for (const h of textRules.phpFallback(cache.lines(path.join(project.root, rel)) || [])) raw.push(makeFinding(h.ruleId, { ...h, file: rel }, ctx));
+      }
+    });
+    for (const hit of taint.hits) {
+      const meta = rule(hit.rule);
+      const finding = makeFinding(hit.rule, {
+        file: hit.file, line: hit.line, column: hit.col, confidence: CONF[hit.conf] || 'low',
+        message: taintMessage(meta, hit), trace: hit.trace,
+      }, ctx);
+      if (hit.entries && hit.entries.length) {
+        finding.entryPoints = hit.entries.slice(0, 200);
+        finding.message += ` Reached from ${hit.entries.slice(0, 3).join(', ')}${hit.entries.length > 3 ? ` and ${hit.entries.length - 3} more` : ''}.`;
+      }
+      raw.push(finding);
+    }
+    if (taint.exhausted) notices.add('info', `The analysis budget was reached for ${taint.exhausted} entry file(s); results for them may be incomplete.`);
 
     const usesPhp = project.files.some((f) => EXTENSIONS.includes(f.ext));
     for (const h of projectRules.exposedFiles(project)) raw.push(makeFinding(h.ruleId, h, ctx));

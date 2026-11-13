@@ -103,7 +103,7 @@ function scoreFileLevel(cases, allFindings) {
     let detected;
     if (c.scope === 'dir') {
       const prefix = c.file.endsWith('/') ? c.file : c.file + '/';
-      detected = findings.some((f) => f.file.startsWith(prefix) && cwes.includes(f.cwe));
+      detected = findings.some((f) => cwes.includes(f.cwe) && (f.file.startsWith(prefix) || (f.entryPoints || []).some((e) => e.startsWith(prefix))));
     } else {
       const set = byFile.get(c.file);
       detected = !!set && cwes.some((cwe) => set.has(cwe));

@@ -38,8 +38,18 @@ function callName(n) {
   return null;
 }
 
+const namesCache = new WeakMap();
+
 /** Names mentioned in a subtree: variables, array string keys, properties, constants. */
 function names(n) {
+  if (!isNode(n)) return [];
+  if (namesCache.has(n)) return namesCache.get(n);
+  const out = computeNames(n);
+  namesCache.set(n, out);
+  return out;
+}
+
+function computeNames(n) {
   const out = [];
   walk(n, (x) => {
     if (x.kind === 'variable' && typeof x.name === 'string') out.push(x.name);
@@ -166,9 +176,9 @@ const TOKEN_RE = /token|secret|nonce|csrf|salt|reset|otp|verif|activation|api_?k
 const WEAK_RANDOM = new Set(['rand', 'mt_rand', 'uniqid', 'lcg_value', 'microtime', 'array_rand', 'str_shuffle', 'mt_srand', 'srand']);
 const SECRET_CMP_RE = /^(.*_)?(token|csrf\w*|hash|hashed\w*|signature|sig|hmac|secret|password|passwd|pwd|api_?key|nonce|otp|digest)(_\w*)?$/i;
 
-function cryptoRules(ast) {
+function cryptoRules(nodes) {
   const hits = [];
-  walk(ast, (n) => {
+  nodes.forEach((n) => {
     if (n.kind === 'call') {
       const name = callName(n);
       const args = n.arguments || [];
@@ -206,11 +216,11 @@ function cryptoRules(ast) {
 
 const SESSION_KEY_RE = /user|uid|login|logged|auth|admin|role|member|account|^id$/i;
 
-function sessionFixationRule(ast) {
+function sessionFixationRule(nodes) {
   let checksPassword = false;
   let regenerates = false;
   const assignments = [];
-  walk(ast, (n) => {
+  nodes.forEach((n) => {
     if (n.kind === 'call') {
       const name = callName(n);
       if (name === 'password_verify' || name === 'ldap_bind' || name === 'crypt') checksPassword = true;
@@ -233,9 +243,9 @@ const TRUTHY = /^(1|on|true|yes|stdout|stderr)$/i;
 const DB_ERROR_FNS = new Set(['mysqli_error', 'mysql_error', 'pg_last_error', 'pg_result_error', 'sqlsrv_errors', 'oci_error', 'db2_stmt_errormsg', 'odbc_errormsg', 'mysqli_connect_error', 'mysqli_stmt_error', '->geterrormessage']);
 const EXC_METHODS = new Set(['->getmessage', '->gettraceasstring', '->errorinfo', '->gettrace']);
 
-function configRules(ast) {
+function configRules(nodes) {
   const hits = [];
-  walk(ast, (n) => {
+  nodes.forEach((n) => {
     if (n.kind === 'call') {
       const name = callName(n);
       const args = n.arguments || [];
@@ -267,9 +277,9 @@ function configRules(ast) {
 
 const XML_LOADERS = new Set(['->loadxml', '->loadhtml', '->load', '->loadhtmlfile', 'simplexml_load_string', 'simplexml_load_file', 'simplexml_import_dom', '->xml', '->open']);
 
-function xxeRules(ast) {
+function xxeRules(nodes) {
   const hits = [];
-  walk(ast, (n) => {
+  nodes.forEach((n) => {
     if (n.kind === 'call') {
       const name = callName(n);
       if (XML_LOADERS.has(name) || (name && name.startsWith('new'))) {
@@ -301,13 +311,13 @@ const PLACEHOLDERS = /^(|password|passwd|your[_-]?password|changeme|change[_-]?m
 const CONNECT_PASSWORD_ARG = { mysqli_connect: 2, mysql_connect: 2, mysql_pconnect: 2, mysqli_real_connect: 3, ldap_bind: 2, oci_connect: 1, odbc_connect: 2, db2_connect: 2 };
 const NEW_PASSWORD_ARG = { mysqli: 2, pdo: 2 };
 
-function secretRules(ast) {
+function secretRules(nodes) {
   const hits = [];
   const check = (arg, n) => {
     const s = arg && (arg.kind === 'string' || arg.kind === 'nowdoc') ? String(arg.value) : null;
     if (s !== null && !PLACEHOLDERS.test(s.trim()) && s.length >= 4) hits.push({ ruleId: 'PHP-SECRET-001', line: lineOf(n), column: colOf(n) });
   };
-  walk(ast, (n) => {
+  nodes.forEach((n) => {
     if (n.kind === 'call') {
       const name = callName(n);
       if (name && Object.prototype.hasOwnProperty.call(CONNECT_PASSWORD_ARG, name)) check((n.arguments || [])[CONNECT_PASSWORD_ARG[name]], n);
@@ -331,13 +341,15 @@ function secretRules(ast) {
 
 /** Runs every structural rule on one file's AST. */
 function runAstRules(ast) {
+  const nodes = [];
+  walk(ast, (n) => { nodes.push(n); });
   return [
     ...earRule(ast),
-    ...cryptoRules(ast),
-    ...sessionFixationRule(ast),
-    ...configRules(ast),
-    ...xxeRules(ast),
-    ...secretRules(ast),
+    ...cryptoRules(nodes),
+    ...sessionFixationRule(nodes),
+    ...configRules(nodes),
+    ...xxeRules(nodes),
+    ...secretRules(nodes),
   ];
 }
 

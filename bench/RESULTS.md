@@ -1,6 +1,6 @@
 # ASST benchmark results
 
-Generated 2026-11-13T14:31:38.387Z on win32-x64, Node 22.23.5. Findings counted at confidence ≥ medium. Reproduce with `npm run bench`.
+Generated 2026-11-13T15:05:06.101Z on win32-x64, Node 22.23.5. Findings counted at confidence ≥ medium. Reproduce with `npm run bench`.
 
 Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = harmonic mean (percent).
 
@@ -8,8 +8,8 @@ Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = harmonic mean (percent).
 
 | Version | Precision | Recall | F1 | TP | FP | FN | Time (s) | Files/s | Peak RSS (MB) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| v1.0 (line-based engine) | 19.0 | 30.8 | 23.5 | 12 | 51 | 27 | 0.5 | 121 | 41 |
-| v2 (current branch) | 100.0 | 100.0 | 100.0 | 39 | 0 | 0 | 0.2 | 358 | 49 |
+| v1.0 (line-based engine) | 19.0 | 30.8 | 23.5 | 12 | 51 | 27 | 0.8 | 78 | 55 |
+| v2 (current branch) | 100.0 | 100.0 | 100.0 | 39 | 0 | 0 | 0.3 | 208 | 61 |
 
 | CWE | v1.0 (line-based engine) P / R / F1 | v2 (current branch) P / R / F1 |
 |---|---:|---:|
@@ -41,8 +41,8 @@ Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = harmonic mean (percent).
 
 | Version | Precision | Recall | F1 | TP | FP | FN | Time (s) | Files/s | Peak RSS (MB) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| v1.0 (line-based engine) | 41.2 | 41.2 | 41.2 | 7 | 10 | 10 | 0.1 | 136 | 42 |
-| v2 (current branch) | 100.0 | 100.0 | 100.0 | 17 | 0 | 0 | 0.2 | 106 | 45 |
+| v1.0 (line-based engine) | 41.2 | 41.2 | 41.2 | 7 | 10 | 10 | 0.2 | 104 | 54 |
+| v2 (current branch) | 100.0 | 100.0 | 100.0 | 17 | 0 | 0 | 0.2 | 90 | 57 |
 
 | CWE | v1.0 (line-based engine) P / R / F1 | v2 (current branch) P / R / F1 |
 |---|---:|---:|
@@ -63,15 +63,15 @@ Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = harmonic mean (percent).
 
 | Version | Precision | Recall | F1 | TP | FP | FN | Time (s) | Files/s | Peak RSS (MB) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| v1.0 (line-based engine) | 91.7 | 78.6 | 84.6 | 11 | 1 | 3 | 3.4 | 73 | 59 |
-| v2 (current branch) | 100.0 | 78.6 | 88.0 | 11 | 0 | 3 | 0.5 | 483 | 69 |
+| v1.0 (line-based engine) | 91.7 | 78.6 | 84.6 | 11 | 1 | 3 | 5.5 | 46 | 70 |
+| v2 (current branch) | 100.0 | 92.9 | 96.3 | 13 | 0 | 1 | 0.6 | 433 | 102 |
 
 | CWE | v1.0 (line-based engine) P / R / F1 | v2 (current branch) P / R / F1 |
 |---|---:|---:|
 | CWE-78 | 75.0 / 100.0 / 85.7 | 100.0 / 100.0 / 100.0 |
-| CWE-79 | 100.0 / 100.0 / 100.0 | – / 0.0 / 0.0 |
+| CWE-79 | 100.0 / 100.0 / 100.0 | 100.0 / 100.0 / 100.0 |
 | CWE-89 | 100.0 / 100.0 / 100.0 | 100.0 / 83.3 / 90.9 |
-| CWE-98 | 100.0 / 100.0 / 100.0 | – / 0.0 / 0.0 |
+| CWE-98 | 100.0 / 100.0 / 100.0 | 100.0 / 100.0 / 100.0 |
 | CWE-601 | – / 0.0 / 0.0 | 100.0 / 100.0 / 100.0 |
 
 ## sard
@@ -80,8 +80,8 @@ Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = harmonic mean (percent).
 
 | Version | Precision | Recall | F1 | TP | FP | FN | Time (s) | Files/s | Peak RSS (MB) |
 |---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| v1.0 (line-based engine) | 28.1 | 48.6 | 35.6 | 300 | 769 | 317 | 34.7 | 58 | 79 |
-| v2 (current branch) | 73.4 | 60.8 | 66.5 | 375 | 136 | 242 | 2.4 | 844 | 96 |
+| v1.0 (line-based engine) | 28.1 | 48.6 | 35.6 | 300 | 769 | 317 | 54.2 | 37 | 85 |
+| v2 (current branch) | 73.4 | 60.8 | 66.5 | 375 | 136 | 242 | 2.5 | 802 | 125 |
 
 | CWE | v1.0 (line-based engine) P / R / F1 | v2 (current branch) P / R / F1 |
 |---|---:|---:|
@@ -98,10 +98,18 @@ Precision = TP/(TP+FP), Recall = TP/(TP+FN), F1 = harmonic mean (percent).
 | CWE-601 | – / 0.0 / 0.0 | 100.0 / 61.0 / 75.8 |
 | CWE-862 | – / 0.0 / 0.0 | – / 0.0 / 0.0 |
 
+## wordpress
+
+| Version | Precision | Recall | F1 | TP | FP | FN | Time (s) | Files/s | Peak RSS (MB) |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| v2 (current branch) | – | – | – | – | – | – | 12.5 | 303 | 547 |
+
 ## Notes
 
 - Fixtures: the annotated ASST fixture corpus (test/fixtures). It is also the regression suite, so high scores are expected there; DVWA and NIST SARD are the independent measures.
 - DVWA: ground truth per module and security level in bench/truth/dvwa.json ("impossible" level = secure reference). Modules whose flaw spans several files are scored at module level.
 - NIST SARD #103: scored per test-case file. The suite treats session data, files and command output as untrusted input, so the current engine runs with --second-order on this dataset. Labels are used exactly as published; a small number of generated cases sanitize a different variable than the one they use, which affects every tool equally.
+- WordPress core is used for throughput only (no ground truth); findings there are not scored.
+- Findings inside shared helper files are matched to every entry script that reaches them (the entry points listed in the report).
 - v1.0 findings are mapped to CWE ids by the function or message each finding names.
 

@@ -63,3 +63,16 @@ test('--fail-on sets a non-zero exit code for CI', () => {
   fs.rmSync(out, { recursive: true, force: true });
   assert.strictEqual(r.status, 1);
 });
+
+test('cross-file analysis: includes, define() paths, helpers in other files', () => {
+  const dir = path.join(REPO, 'test', 'fixtures', 'php-crossfile');
+  const { report, missing } = checkCorpus(dir);
+  assert.deepStrictEqual(missing.map((m) => `${m.file}:${m.line} ${m.cwes.join('|')}`), []);
+  const xss = report.findings.filter((f) => f.ruleId === 'PHP-XSS-001');
+  assert.deepStrictEqual(xss.map((f) => `${f.file}:${f.line}`), ['view.php:4'], 'e() from another file is recognized as escaping');
+  const sqli = report.findings.find((f) => f.ruleId === 'PHP-SQLI-001');
+  assert.strictEqual(sqli.file, 'lib/helpers.php');
+  assert.ok(sqli.entryPoints.includes('index.php'), 'sink in a helper is linked to the entry script');
+  const cmd = report.findings.find((f) => f.ruleId === 'PHP-CMDI-001');
+  assert.ok(cmd && cmd.trace.some((t) => /\$_GET\['dir'\]/.test(t.note)), 'value set in an included file reaches the sink');
+});

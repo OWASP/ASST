@@ -53,8 +53,9 @@ function csrfForms(file, text) {
 
 /* ------------------------------------------------------------ DOM XSS */
 
-const DOM_SOURCE = /\b(location\s*\.\s*(hash|search|href|pathname)|location\b(?!\s*\.\s*(reload|assign|replace))|document\s*\.\s*(URL|documentURI|baseURI|referrer|cookie)|window\s*\.\s*name|URLSearchParams|\.searchParams|(event|evt|e|msg|message)\s*\.\s*data\b)/;
-const HTML_SINK = /(\.(?:innerHTML|outerHTML)\s*\+?=(?!=)|document\s*\.\s*write(?:ln)?\s*\(|\.insertAdjacentHTML\s*\(\s*[^,]+,|\$\s*\(\s*(?=[^'"`)])|\.(?:html|append|prepend|after|before|replaceWith)\s*\(\s*(?=[^'"`)\s]))/;
+const DOM_SOURCE = /(?<![\w$.])(?:(?:window|document|self|top)\s*\.\s*)?location\s*\.\s*(?:hash|search|href|pathname)\b|(?:window|document)\s*\.\s*location\b(?!\s*\.\s*(?:reload|assign|replace))|document\s*\.\s*(?:URL|documentURI|baseURI|referrer)\b|window\s*\.\s*name\b|URLSearchParams|\.searchParams\b/;
+const MESSAGE_SOURCE = /(?<![\w$.])(?:event|evt|e|msg|message)\s*\.\s*data\b/;
+const HTML_SINK = /(\.(?:innerHTML|outerHTML)\s*\+?=(?!=)|document\s*\.\s*write(?:ln)?\s*\(|\.insertAdjacentHTML\s*\(\s*[^,]+,|\.(?:html|append|prepend|after|before|replaceWith)\s*\(\s*(?=[^'"`)\s]))/;
 const CODE_SINK = /(\beval\s*\(|\bnew\s+Function\s*\(|\bset(?:Timeout|Interval)\s*\(\s*(?=['"`]|[^'"`,)]*\+))/;
 
 function scriptTexts(file, text) {
@@ -66,22 +67,44 @@ function scriptTexts(file, text) {
   return out;
 }
 
+function isMinified(code) {
+  if (code.length < 2000) return false;
+  const lines = code.split('\n').length;
+  return code.length / lines > 400;
+}
+
+function identifierMatcher(ids) {
+  if (ids.size === 0) return null;
+  const alt = [...ids].map((id) => id.replace(/[$]/g, '\\$')).join('|');
+  return new RegExp(`(?<![\\w$])(?:${alt})(?![\\w$])`);
+}
+
 function domRules(file, text) {
   if (!SCRIPT_EXT.has(file.ext)) return [];
   const hits = [];
   const starts = lineStarts(text);
   for (const { offset, code } of scriptTexts(file, text)) {
+    // minified bundles are third-party builds; their sources are reviewed through dependency checks
+    if (isMinified(code)) continue;
+    if (!HTML_SINK.test(code) && !CODE_SINK.test(code)) continue;
     const statements = code.split(/(?<=[;\n])/);
+    const listensForMessages = /addEventListener\(\s*['"]message['"]|onmessage\s*=/.test(code);
+    const isSource = (t) => DOM_SOURCE.test(t) || (listensForMessages && MESSAGE_SOURCE.test(t));
     const tainted = new Set();
     // two passes so that later-declared derived variables are recognized
     for (let pass = 0; pass < 2; pass++) {
+      let matcher = identifierMatcher(tainted);
       for (const stmt of statements) {
         const m = /(?:\b(?:var|let|const)\s+)?([A-Za-z_$][\w$]*)\s*=(?!=)([\s\S]*)/.exec(stmt);
-        if (!m) continue;
+        if (!m || tainted.has(m[1])) continue;
         const rhs = m[2];
-        if (DOM_SOURCE.test(rhs) || [...tainted].some((id) => new RegExp(`\\b${id.replace(/\$/g, '\\$')}\\b`).test(rhs))) tainted.add(m[1]);
+        if (isSource(rhs) || (matcher && matcher.test(rhs))) {
+          tainted.add(m[1]);
+          matcher = identifierMatcher(tainted);
+        }
       }
     }
+    const matcher = identifierMatcher(tainted);
     let pos = 0;
     for (const stmt of statements) {
       const idx = pos;
@@ -91,8 +114,8 @@ function domRules(file, text) {
         const sm = re.exec(stmt);
         if (!sm) continue;
         const after = stmt.slice(sm.index + sm[0].length);
-        const direct = DOM_SOURCE.test(after);
-        const viaVar = [...tainted].some((id) => new RegExp(`\\b${id.replace(/\$/g, '\\$')}\\b`).test(after));
+        const direct = isSource(after);
+        const viaVar = Boolean(matcher && matcher.test(after));
         if (!direct && !viaVar) continue;
         hits.push({ ruleId, line: lineFromStarts(starts, offset + idx + sm.index), column: 1, confidence: direct ? 'high' : 'medium' });
       }

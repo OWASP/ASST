@@ -131,7 +131,7 @@ function scan(prepared, datasetDir, datasetName, opts = {}) {
     const reportFile = path.join(runDir, 'report.json');
     if (!fs.existsSync(reportFile)) throw new Error(`no report.json produced (exit ${stats.exitCode}): ${stats.stderr}`);
     const report = JSON.parse(fs.readFileSync(reportFile, 'utf8'));
-    const findings = report.findings.map((f) => ({ file: f.file, line: f.line ?? null, cwe: f.cwe, confidence: f.confidence || 'high', ruleId: f.ruleId }));
+    const findings = report.findings.map((f) => ({ file: f.file, line: f.line ?? null, cwe: f.cwe, confidence: f.confidence || 'high', ruleId: f.ruleId, entryPoints: f.entryPoints || [] }));
     return { findings, stats, filesScanned: report.summary ? report.summary.filesScanned : null };
   }
 

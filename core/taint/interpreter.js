@@ -30,12 +30,16 @@ class Env {
     this.out = out || contexts.initialHtmlState();
     this.bottom = false;
     this.globals = null; // Set of names bound to the main environment
+    this.included = null; // files already included (for *_once)
+    this.haltKind = null; // 'exit' | 'return'
   }
 
   clone() {
     const e = new Env(new Map(this.vars), { ...this.out });
     e.bottom = this.bottom;
     e.globals = this.globals ? new Set(this.globals) : null;
+    e.included = this.included ? new Set(this.included) : null;
+    e.haltKind = this.haltKind;
     return e;
   }
 
@@ -47,12 +51,15 @@ class Env {
       this.out = { ...other.out };
       this.bottom = false;
       this.globals = other.globals ? new Set(other.globals) : null;
+      this.included = other.included ? new Set(other.included) : null;
+      this.haltKind = null;
       return this;
     }
     for (const [k, v] of other.vars) this.vars.set(k, this.vars.has(k) ? V.join(this.vars.get(k), v) : v);
     for (const [k, v] of this.vars) if (!other.vars.has(k)) this.vars.set(k, v);
     if (JSON.stringify(this.out) !== JSON.stringify(other.out)) this.out = contexts.initialHtmlState();
     if (other.globals) this.globals = new Set([...(this.globals || []), ...other.globals]);
+    if (other.included) this.included = new Set([...(this.included || []), ...other.included]);
     return this;
   }
 
@@ -89,20 +96,32 @@ class Interpreter {
     this.p = program;
     this.cat = catalog;
     this.opts = options;
-    this.hits = new Map();
+    const shared = options.shared || {};
+    this.hits = shared.hits || new Map();
+    this.memo = shared.memo || new Map();
+    this.analyzed = shared.analyzed || new Set();
+    this.hitLog = [];
+    this.project = options.project || null;
+    this.entry = program.file;
+    this.constants = new Map();
+    this.includeCount = 0;
     this.depth = 0;
     this.budget = options.budget || 400000;
-    this.memo = new Map();
-    this.analyzed = new Set();
     this.mainEnv = null;
     this.exhausted = false;
   }
 
-  run() {
+  run({ standalone = true } = {}) {
     const env = new Env();
     this.mainEnv = env;
-    this.execBlock(this.p.main, env, { fn: null });
-    for (const fn of this.p.allFunctions) {
+    this.execBlock(this.p.main, env, { fn: null, file: this.p.file });
+    if (standalone) this.analyzeRemaining(this.p.allFunctions);
+    return { hits: [...this.hits.values()], exhausted: this.exhausted };
+  }
+
+  /** Analyzes functions that were never called, with untainted (or assumed-tainted) parameters. */
+  analyzeRemaining(functions) {
+    for (const fn of functions) {
       if (this.analyzed.has(fn)) continue;
       const args = this.opts.assumeParamsTainted
         ? fn.params.map((p) => V.source('src', `parameter $${p.name}`, fn.line, 2))
@@ -110,7 +129,6 @@ class Interpreter {
       const thisVal = fn.cls ? this.newObjectValue(fn.cls, false) : null;
       this.invoke(fn, args, [], thisVal, fn.line);
     }
-    return { hits: [...this.hits.values()], exhausted: this.exhausted };
   }
 
   tick() {
@@ -220,11 +238,13 @@ class Interpreter {
           this.recordExit(env, f);
         }
         env.bottom = true;
+        env.haltKind = f.fn ? 'return' : 'top-return';
         break;
       }
       case 'halt':
         if (f.fn) this.recordExit(env, f);
         env.bottom = true;
+        env.haltKind = 'exit';
         break;
       case 'global':
         env.globals = env.globals || new Set();
@@ -246,6 +266,8 @@ class Interpreter {
     env.out = other.out;
     env.bottom = other.bottom;
     env.globals = other.globals;
+    env.included = other.included;
+    env.haltKind = other.haltKind;
   }
 
   recordExit(env, f) {
@@ -434,7 +456,16 @@ class Interpreter {
         if (typeof e.value === 'string') return V.constant(e.value);
         return V.CLEAN;
       case 'const':
+        if (this.constants.has(e.name)) return this.constants.get(e.name);
         return this.cat.constant ? this.cat.constant(e.name) : V.CLEAN;
+      case 'magic': {
+        const file = f.file || this.p.file || '';
+        const dir = file.includes('/') ? file.slice(0, file.lastIndexOf('/')) : '';
+        if (e.name === '__DIR__') return V.constant(dir ? `/${dir}` : '');
+        if (e.name === '__FILE__') return V.constant(`/${file}`);
+        if (e.name === '__LINE__') return { t: false, num: true };
+        return V.constant(e.name);
+      }
       case 'path':
         if (e.base === 'this' && f.fn && !env.vars.has('this')) return V.CLEAN;
         return this.read(e, env, f);
@@ -514,7 +545,7 @@ class Interpreter {
   }
 
   newObjectValue(cls, runConstructor, args = [], env = null, f = null, line = 0) {
-    const def = this.p.classes.get(String(cls).toLowerCase());
+    const def = this.findClass(cls);
     const fields = new Map();
     let obj = { t: false, obj: { cls: def ? def.name : cls, fields } };
     if (def) {
@@ -539,9 +570,34 @@ class Interpreter {
     while (cur && !seen.has(cur.name)) {
       chain.push(cur);
       seen.add(cur.name);
-      cur = cur.parent ? this.p.classes.get(cur.parent.toLowerCase()) : null;
+      cur = cur.parent ? this.findClass(cur.parent) : null;
     }
     return chain;
+  }
+
+  findClass(name) {
+    const lc = String(name || '').toLowerCase();
+    if (this.p.classes.has(lc)) return this.p.classes.get(lc);
+    if (this.project) {
+      const list = this.project.classes.get(lc);
+      if (list && list.length === 1) return list[0];
+    }
+    return null;
+  }
+
+  findFunction(lcName) {
+    if (this.p.functions.has(lcName)) return this.p.functions.get(lcName);
+    if (this.project) {
+      const list = this.project.functions.get(lcName);
+      if (list && list.length === 1) return list[0];
+    }
+    return null;
+  }
+
+  methodsNamed(lcName) {
+    const own = this.p.methodsByName.get(lcName) || [];
+    if (!this.project) return own;
+    return this.project.methodsByName.get(lcName) || own;
   }
 
   findMethod(def, lcName) {
@@ -552,10 +608,62 @@ class Interpreter {
   evalNew(e, env, f) {
     const args = (e.args || []).map((a) => this.eval(a, env, f));
     const cls = e.cls;
-    if (cls && this.p.classes.has(cls.toLowerCase())) return this.newObjectValue(cls, true, args, env, f, e.line);
+    if (cls && this.findClass(cls)) return this.newObjectValue(cls, true, args, env, f, e.line);
     const hit = this.cat.call ? this.cat.call(`new:${String(cls || '').toLowerCase()}`, args, e, this.ctxApi(env, f)) : null;
     if (hit) return this.applyCatalogResult(hit, e, args, env, f);
     return { t: false, obj: { cls: cls || null, fields: new Map() } };
+  }
+
+  /** Resolves an include path (as PHP would) to a file of the project, or null. */
+  resolveInclude(candidate, currentFile) {
+    if (!this.project || typeof candidate !== 'string' || candidate.includes('<') || /^[a-z]+:\/\//i.test(candidate)) return null;
+    const posix = require('path').posix;
+    const dirOf = (file) => (file && file.includes('/') ? file.slice(0, file.lastIndexOf('/')) : '');
+    const tries = [];
+    if (candidate.startsWith('/')) tries.push(candidate.replace(/^\/+/, ''));
+    else {
+      tries.push(posix.join(dirOf(this.entry), candidate));
+      tries.push(posix.join(dirOf(currentFile), candidate));
+      tries.push(candidate);
+    }
+    for (const t of tries) {
+      const norm = posix.normalize(t).replace(/^\.\//, '');
+      if (!norm.startsWith('..') && this.project.programs.has(norm)) return norm;
+    }
+    return null;
+  }
+
+  /** Runs an included file in the including scope (PHP semantics). */
+  executeInclude(target, e, env, f) {
+    if (!this.project || !target) return;
+    const depth = f.includeDepth || 0;
+    if (depth >= 4 || this.includeCount >= 60) return;
+    const candidates = V.alternatives(target);
+    if (!candidates) return;
+    const files = [];
+    for (const c of candidates) {
+      const rel = this.resolveInclude(c, f.file || this.entry);
+      if (!rel || files.includes(rel)) continue;
+      if (e.once && env.included && env.included.has(rel)) continue;
+      if ((f.including || []).includes(rel) || rel === (f.file || this.entry)) continue;
+      files.push(rel);
+    }
+    if (files.length === 0) return;
+    const branches = files.map((rel) => {
+      const branch = files.length > 1 ? env.clone() : env;
+      branch.included = new Set([...(branch.included || []), rel]);
+      const sub = { ...f, file: rel, includeDepth: depth + 1, including: [...(f.including || []), rel] };
+      this.includeCount++;
+      this.execBlock(this.project.programs.get(rel).main, branch, sub);
+      if (branch.bottom && branch.haltKind === 'top-return') { branch.bottom = false; branch.haltKind = null; }
+      return branch;
+    });
+    if (files.length > 1) {
+      const merged = branches[0];
+      for (const b of branches.slice(1)) merged.joinFrom(b);
+      this.replace(env, merged);
+      env.included = merged.included;
+    }
   }
 
   ctxApi(env, f) {
@@ -584,6 +692,20 @@ class Interpreter {
       return res.ret ? V.step(res.ret, e.line, `returned by ${user.fn.name}()`) : V.CLEAN;
     }
 
+    if (callee === 'fn:define' && args[0] && args[0].str !== undefined) {
+      this.constants.set(args[0].str, args[1] || V.CLEAN);
+      return V.CLEAN;
+    }
+    if (callee === 'fn:dirname' && args[0]) {
+      const alts = V.alternatives(args[0]);
+      if (alts && alts.length === 1) return V.constant(alts[0].includes('/') ? alts[0].slice(0, alts[0].lastIndexOf('/')) || '/' : '.');
+    }
+    if (callee === '@include') {
+      const hit = this.cat.call ? this.cat.call(callee, args, e, this.ctxApi(env, f)) : null;
+      if (hit) this.applyCatalogResult(hit, e, args, env, f);
+      this.executeInclude(args[0], e, env, f);
+      return V.CLEAN;
+    }
     if (callee === '@inline') {
       const text = argExprs[0] && argExprs[0].value !== undefined ? String(argExprs[0].value) : '';
       env.out = contexts.htmlScan({ ...env.out }, text);
@@ -613,7 +735,7 @@ class Interpreter {
   resolveUser(e, env, f) {
     const callee = e.callee || '';
     if (callee.startsWith('fn:')) {
-      const fn = this.p.functions.get(callee.slice(3).replace(/^\\/, '').split('\\').pop());
+      const fn = this.findFunction(callee.slice(3).replace(/^\\/, '').split('\\').pop());
       return fn ? { fn, thisVal: null } : null;
     }
     if (callee.startsWith('m:') && e.recv) {
@@ -621,11 +743,11 @@ class Interpreter {
       const recv = this.eval(e.recv, env, f);
       let fn = null;
       if (recv.obj && recv.obj.cls) {
-        const def = this.p.classes.get(String(recv.obj.cls).toLowerCase());
+        const def = this.findClass(recv.obj.cls);
         if (def) fn = this.findMethod(def, name);
       }
       if (!fn) {
-        const candidates = this.p.methodsByName.get(name) || [];
+        const candidates = this.methodsNamed(name);
         if (candidates.length === 1 && !(this.cat.isKnownMethod && this.cat.isKnownMethod(name))) fn = candidates[0];
       }
       if (!fn) return null;
@@ -635,11 +757,11 @@ class Interpreter {
     if (callee.startsWith('sm:')) {
       const [cls, name] = callee.slice(3).split('::');
       let def = null;
-      if (['self', 'static'].includes(cls) && f.fn && f.fn.cls) def = this.p.classes.get(f.fn.cls.toLowerCase());
+      if (['self', 'static'].includes(cls) && f.fn && f.fn.cls) def = this.findClass(f.fn.cls);
       else if (cls === 'parent' && f.fn && f.fn.cls) {
-        const own = this.p.classes.get(f.fn.cls.toLowerCase());
-        def = own && own.parent ? this.p.classes.get(own.parent.toLowerCase()) : null;
-      } else def = this.p.classes.get(cls);
+        const own = this.findClass(f.fn.cls);
+        def = own && own.parent ? this.findClass(own.parent) : null;
+      } else def = this.findClass(cls);
       const fn = def ? this.findMethod(def, name) : null;
       if (!fn) return null;
       const thisVal = env.vars.get('this') || null;
@@ -656,17 +778,23 @@ class Interpreter {
     };
     if (this.depth >= MAX_DEPTH || this.exhausted) return fallback();
     const key = `${fn.id}#${signature(args)}#${signature([thisVal])}`;
-    if (this.memo.has(key)) return this.memo.get(key);
+    if (this.memo.has(key)) {
+      const cached = this.memo.get(key);
+      // findings produced inside this function are reachable from the current entry point too
+      for (const k of cached.hitKeys || []) { const h = this.hits.get(k); if (h) h.entries.add(this.entry); }
+      return cached;
+    }
     this.memo.set(key, fallback()); // recursion guard
+    const logStart = this.hitLog.length;
     const env = new Env();
     fn.params.forEach((p, i) => {
       let v = args[i];
       if (p.variadic) v = V.joinAll(args.slice(i));
-      if (v === undefined) v = p.def ? this.eval(p.def, env, { fn }) : V.CLEAN;
+      if (v === undefined) v = p.def ? this.eval(p.def, env, { fn, file: fn.file }) : V.CLEAN;
       env.vars.set(p.name, v && v.t ? V.step(v, line, `passed to ${fn.name}() as $${p.name}`) : v);
     });
     if (thisVal) env.vars.set('this', thisVal);
-    const f = { fn, ret: null, thisOut: null, byRefParams: fn.params.filter((p) => p.byRef).map((p) => p.name), byRefOut: new Map() };
+    const f = { fn, file: fn.file || this.p.file, ret: null, thisOut: null, byRefParams: fn.params.filter((p) => p.byRef).map((p) => p.name), byRefOut: new Map() };
     this.depth++;
     try {
       this.execBlock(fn.body, env, f);
@@ -674,14 +802,14 @@ class Interpreter {
       this.depth--;
     }
     if (!env.bottom) this.recordExit(env, f);
-    const result = { ret: f.ret || V.CLEAN, thisOut: f.thisOut || thisVal, byRefOut: f.byRefOut };
+    const result = { ret: f.ret || V.CLEAN, thisOut: f.thisOut || thisVal, byRefOut: f.byRefOut, hitKeys: this.hitLog.slice(logStart) };
     this.memo.set(key, result);
     return result;
   }
 
   /* ---------------------------------------------------------------- sinks */
 
-  checkSink(sink, e, args, env) {
+  checkSink(sink, e, args, env, f = {}) {
     let value;
     if (sink.value) value = sink.value;
     else if (sink.arg === 'all') value = V.concat(args);
@@ -703,10 +831,15 @@ class Interpreter {
       const v = u.v;
       if (!v.origins || !v.origins.some((o) => o === 'src' || o === 'src2')) continue;
       const conf = Math.min(2, (v.c || 0) + (v.g ? 2 : 0) + (sink.confPenalty || 0));
-      const key = `${sink.rule}|${e.line}|${e.col || 0}`;
+      const file = f.file || this.p.file;
+      const key = `${file}|${sink.rule}|${e.line}|${e.col || 0}`;
       const prev = this.hits.get(key);
+      this.hitLog.push(key);
+      if (prev) prev.entries.add(this.entry);
       if (prev && prev.conf <= conf && prev.trace.length <= (v.trace || []).length) continue;
       this.hits.set(key, {
+        file,
+        entries: prev ? prev.entries : new Set([this.entry]),
         rule: sink.rule,
         line: e.line,
         col: e.col || null,

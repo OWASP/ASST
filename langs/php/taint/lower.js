@@ -172,6 +172,7 @@ class Lowerer {
     if (cls) this.currentClass = cls;
     const fn = {
       id: `${this.file}#${this.nextId++}`,
+      file: this.file,
       name: name || '{closure}',
       cls: cls || null,
       line: lineOf(n),
@@ -299,7 +300,7 @@ class Lowerer {
       case 'nullkeyword':
         return { k: 'lit', value: null, line };
       case 'magic':
-        return { k: 'lit', value: `<${String(n.value || n.raw || 'magic')}>`, line };
+        return { k: 'magic', name: String(n.raw || n.value || '').toUpperCase(), line };
       case 'encapsed': {
         const parts = (n.value || []).map((p) => {
           const x = p.kind === 'encapsedpart' ? p.expression : p;
@@ -354,6 +355,7 @@ class Lowerer {
       case 'call': {
         const w = n.what;
         const args = this.args(n.arguments);
+        if (!w) return { k: 'unknown', parts: args, line };
         if (w.kind === 'name') return { k: 'call', callee: `fn:${lastSegment(w.name).toLowerCase()}`, args, line, col: colOf(n) };
         if ((w.kind === 'propertylookup' || w.kind === 'nullsafepropertylookup') && w.offset && w.offset.kind === 'identifier') {
           return { k: 'call', callee: `m:${w.offset.name.toLowerCase()}`, recv: this.expr(w.what), args, line, col: colOf(n) };
@@ -389,7 +391,7 @@ class Lowerer {
       case 'silent':
         return this.expr(n.expr);
       case 'include':
-        return this.call('@include', [this.expr(n.target)], n);
+        return { ...this.call('@include', [this.expr(n.target)], n), once: Boolean(n.once), require: Boolean(n.require) };
       case 'eval':
         return this.call('@eval', [this.expr(n.source)], n);
       case 'exit':

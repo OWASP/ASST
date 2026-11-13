@@ -85,6 +85,10 @@ function join(a, b) {
   } else {
     out = { t: false };
     if (a.str !== undefined && a.str === b.str) out.str = a.str;
+    else {
+      const set = unionAlternatives(alternatives(a), alternatives(b));
+      if (set) out.strs = set;
+    }
   }
   if (a.arr || b.arr) out.arr = joinMaps(a.arr, b.arr);
   if (a.obj || b.obj) {
@@ -93,6 +97,23 @@ function join(a, b) {
   }
   if (a.num && b.num) out.num = true;
   return out;
+}
+
+const MAX_ALTERNATIVES = 8;
+
+/** Possible constant string values of an untainted value, or null when unknown. */
+function alternatives(v) {
+  if (!v || v.t) return null;
+  if (v.str !== undefined) return [v.str];
+  if (v.strs) return v.strs;
+  if (v.num && v.str === undefined) return null;
+  return null;
+}
+
+function unionAlternatives(a, b) {
+  if (!a || !b) return null;
+  const set = [...new Set([...a, ...b])];
+  return set.length <= MAX_ALTERNATIVES ? set : null;
 }
 
 function joinMaps(a, b) {
@@ -142,7 +163,20 @@ function concat(values) {
       segs.push({ text: '' }); // unknown untainted text (e.g. a number or unknown clean value)
     }
   }
-  if (!anyTaint) return allConst ? constant(constText) : CLEAN;
+  if (!anyTaint) {
+    if (allConst) return constant(constText);
+    // several possible constant strings (e.g. a file name chosen in a switch)
+    let combos = [''];
+    for (const v of values) {
+      const alts = alternatives(v);
+      if (!alts) return CLEAN;
+      const next = [];
+      for (const c of combos) for (const a of alts) next.push(c + a);
+      if (next.length > MAX_ALTERNATIVES) return CLEAN;
+      combos = next;
+    }
+    return combos.length === 1 ? constant(combos[0]) : { t: false, strs: combos };
+  }
   const tainted = segs.filter((s) => s.v).map((s) => s.v);
   const base = joinAll(tainted);
   const merged = mergeTextSegs(segs);
@@ -217,5 +251,5 @@ function within(v, chars) {
 
 module.exports = {
   CLEAN, constant, source, isTainted, join, joinAll, joinMaps, step, weaken, concat, segmentsOf,
-  sanitize, excludes, within, unionChars, MAX_TRACE,
+  sanitize, excludes, within, unionChars, MAX_TRACE, alternatives,
 };
