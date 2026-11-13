@@ -34,8 +34,11 @@ function lineFromStarts(starts, index) {
 const TOKEN_FIELD = /name\s*=\s*["']?[^"'\s>]*(csrf|xsrf|token|nonce|authenticity|_wpnonce|form_key|__requestverificationtoken)/i;
 const TOKEN_HELPER = /@csrf|csrf_field\s*\(|csrf_token\s*\(|wp_nonce_field\s*\(|\{\{\s*csrf|form_token\s*\(|security->get_csrf|\$this->Form->|form_open\s*\(|->csrf|check_admin_referer|\bnonce\b|getCsrf|csrfToken|_token/i;
 
-function csrfForms(file, text) {
+function csrfForms(file, text, { helpers = [], fileWide = false } = {}) {
   if (!TEMPLATE_EXT.has(file.ext) && !file.name.endsWith('.blade.php')) return [];
+  const extra = helpers.filter(Boolean);
+  // frameworks such as WordPress print nonce fields through helper calls elsewhere in the file
+  if (fileWide && extra.some((re) => re.test(text))) return [];
   const hits = [];
   const re = /<form\b([^>]*)>/gi;
   let m;
@@ -45,7 +48,7 @@ function csrfForms(file, text) {
     if (!method || method[1].toLowerCase() !== 'post') continue;
     const end = text.toLowerCase().indexOf('</form>', re.lastIndex);
     const body = text.slice(re.lastIndex, end === -1 ? text.length : end);
-    if (TOKEN_FIELD.test(body) || TOKEN_HELPER.test(body) || TOKEN_HELPER.test(attrs)) continue;
+    if (TOKEN_FIELD.test(body) || TOKEN_HELPER.test(body) || TOKEN_HELPER.test(attrs) || extra.some((re) => re.test(body))) continue;
     hits.push({ ruleId: 'PHP-CSRF-001', line: lineAt(text, m.index), column: 1 });
   }
   return hits;

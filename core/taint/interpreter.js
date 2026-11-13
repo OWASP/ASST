@@ -667,12 +667,15 @@ class Interpreter {
   }
 
   ctxApi(env, f) {
-    return {
+    const api = {
       env,
       opts: this.opts,
       evalExpr: (x) => this.eval(x, env, f),
       readPath: (p) => this.read(p, env, f),
+      // lets catalogs apply another catalog function (e.g. an array_map callback)
+      callCatalog: (callee, argVals, line) => (this.cat.call ? this.cat.call(callee, argVals, { callee, args: [], line: line || 0 }, api) : null),
     };
+    return api;
   }
 
   evalCall(e, env, f) {

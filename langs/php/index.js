@@ -18,6 +18,8 @@ const { phpRuntime, databaseChecks } = require('./runtime/checks');
 const { PhpDatabase, normalizeDbConfig } = require('./runtime/db');
 const manualReview = require('./notices');
 const { loadGuides, pickGuides } = require('../../core/guides');
+const frameworks = require('./frameworks');
+const { extend: extendCatalog } = require('./taint/catalog');
 const { createFinding, fingerprint, dedupe, compareFindings, atLeastSeverity, atLeastConfidence } = require('../../core/finding');
 const { applyInlineSuppressions, loadBaseline, writeBaseline, compareWithBaseline } = require('../../core/suppress');
 const { buildModel } = require('../../core/report/model');
@@ -126,6 +128,14 @@ module.exports = {
 
     if (!config.quiet) console.log(ansi.paint(`Scanning ${project.files.length} files in ${project.root}`, 'cyan'));
 
+    // frameworks: detection, catalog extensions and template helpers
+    const readText = (f) => cache.text(f.abs);
+    const detected = frameworks.detect(project, readText);
+    const pack = frameworks.catalogPack(detected);
+    if (pack) options.catalog = extendCatalog(pack);
+    const csrfOptions = { helpers: frameworks.csrfHelpers(detected), fileWide: detected.some((d) => d.id === 'wordpress') };
+    if (detected.length && !config.quiet) console.log(ansi.paint(`Frameworks: ${detected.map((d) => d.pack.name + (d.info.version ? ` ${d.info.version}` : '')).join(', ')}`, 'cyan'));
+
     const phpFiles = [];
     for (const file of project.files) {
       const isPhp = EXTENSIONS.includes(file.ext);
@@ -136,7 +146,11 @@ module.exports = {
       const lines = cache.lines(file.abs);
       stats.filesAnalyzed++;
       if (isPhp) phpFiles.push({ rel: file.rel, text });
-      for (const h of textRules.csrfForms(file, text)) raw.push(makeFinding(h.ruleId, { ...h, file: file.rel }, ctx));
+      for (const h of textRules.csrfForms(file, text, csrfOptions)) raw.push(makeFinding(h.ruleId, { ...h, file: file.rel }, ctx));
+      for (const d of detected) {
+        if (!d.pack.templateRules) continue;
+        for (const h of d.pack.templateRules(file, text)) raw.push(makeFinding(h.ruleId, { ...h, file: file.rel }, ctx));
+      }
       for (const h of textRules.domRules(file, text)) raw.push(makeFinding(h.ruleId, { ...h, file: file.rel }, ctx));
       for (const h of textRules.httpUrls(file, lines)) raw.push(makeFinding(h.ruleId, { ...h, file: file.rel, confidence: 'medium' }, ctx));
     }
@@ -165,12 +179,22 @@ module.exports = {
     }
     if (taint.exhausted) notices.add('info', `The analysis budget was reached for ${taint.exhausted} entry file(s); results for them may be incomplete.`);
 
+    const envFiles = project.files.filter((f) => /^\.env(\.|$)/.test(f.name)).map((f) => ({ rel: f.rel, text: cache.text(f.abs) || '' }));
+    for (const d of detected) {
+      const hits = [
+        ...(d.pack.projectRules ? d.pack.projectRules(phpFiles, envFiles) : []),
+        ...(d.pack.configRules ? d.pack.configRules(phpFiles) : []),
+      ];
+      for (const h of hits) raw.push(makeFinding(h.ruleId, h, ctx));
+    }
+
     const usesPhp = project.files.some((f) => EXTENSIONS.includes(f.ext));
     for (const h of projectRules.exposedFiles(project)) raw.push(makeFinding(h.ruleId, h, ctx));
     for (const h of projectRules.htaccessRules(project, { usesPhp })) raw.push(makeFinding(h.ruleId, h, ctx));
 
     // runtime checks
     const environment = {};
+    if (detected.length) environment.frameworks = Object.fromEntries(detected.map((d) => [d.pack.name, d.info.version || (d.info.kind ? d.info.kind : null)]));
     const phpBin = resolvePhpBin(config, phpConfig);
     const runtime = phpRuntime(phpBin, new Date());
     if (runtime.notice) notices.add('warning', runtime.notice);

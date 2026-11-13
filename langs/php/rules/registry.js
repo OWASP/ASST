@@ -110,6 +110,18 @@ const RULES = [
   R('JS-CODE-001', 'JavaScript code built from untrusted data', 'CWE-95', 'A05', 'A03', 'high', 'xss#dom-xss', 'xss',
     'eval(), new Function() or string timers execute data that comes from the URL or other untrusted input.'),
 
+  // framework rules
+  R('PHP-XSS-002', 'Unescaped template output', 'CWE-79', 'A05', 'A03', 'medium', 'xss#template-escaping', 'xss',
+    'A template prints a value without escaping (Blade {!! !!}, Twig |raw or autoescape off).'),
+  R('PHP-CONF-003', 'Debug mode enabled', 'CWE-489', 'A02', 'A05', 'medium', 'misconfiguration#debug-mode', 'misconfig',
+    'Framework debug mode is switched on; debug pages reveal source code, configuration values and secrets.'),
+  R('PHP-MASS-001', 'Mass assignment from request data', 'CWE-915', 'A08', 'A08', 'medium', 'integrity#mass-assignment', 'other',
+    'Request data is assigned to model attributes without an allow-list, so users can set fields such as is_admin.'),
+  R('PHP-WP-001', 'WordPress action handler without nonce or capability check', 'CWE-352', 'A01', 'A01', 'high', 'access-control#wordpress-nonces', 'csrf',
+    'An AJAX or admin-post handler changes data without verifying a nonce and the user\'s capabilities.'),
+  R('PHP-CSRF-002', 'CSRF protection disabled for routes', 'CWE-352', 'A01', 'A01', 'low', 'access-control#csrf', 'csrf',
+    'Routes are excluded from CSRF verification. Make sure they cannot be used to change state for logged-in users.'),
+
   // runtime rules
   R('PHP-COMP-001', 'PHP version is end of life', 'CWE-1104', 'A03', 'A06', 'high', 'components#runtime-versions', 'components',
     'The PHP version no longer receives security fixes.'),

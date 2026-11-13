@@ -83,3 +83,22 @@ Header always set Content-Security-Policy "default-src 'self'; frame-ancestors '
 ```
 
 References: [OWASP HTTP Headers Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/HTTP_Headers_Cheat_Sheet.html).
+
+## Framework debug mode {#debug-mode}
+
+Debug pages (Laravel/Ignition, Symfony profiler, WordPress `WP_DEBUG_DISPLAY`) show stack traces, configuration, environment variables and sometimes allow code execution. Keep them off in production:
+
+```ini
+# Laravel .env (production)
+APP_ENV=production
+APP_DEBUG=false
+```
+
+```php
+// WordPress wp-config.php (production)
+define('WP_DEBUG', false);
+define('WP_DEBUG_DISPLAY', false);
+define('WP_DEBUG_LOG', true); // if logging is needed
+```
+
+Never deploy `.env` files inside the web root, and never commit production `.env` files.

@@ -76,3 +76,16 @@ test('cross-file analysis: includes, define() paths, helpers in other files', ()
   const cmd = report.findings.find((f) => f.ruleId === 'PHP-CMDI-001');
   assert.ok(cmd && cmd.trace.some((t) => /\$_GET\['dir'\]/.test(t.note)), 'value set in an included file reaches the sink');
 });
+
+for (const [name, framework] of [['laravel', 'Laravel'], ['wordpress-plugin', 'WordPress'], ['symfony', 'Symfony/Twig']]) {
+  test(`framework pack: ${framework}`, () => {
+    const dir = path.join(REPO, 'test', 'fixtures', name);
+    const { truth, report, missing } = checkCorpus(dir);
+    assert.deepStrictEqual(missing.map((m) => `${m.file}:${m.line} ${m.cwes.join('|')}`), []);
+    for (const e of truth.fileLevel) assert.ok(report.findings.some((f) => f.file === e.file && e.cwes.includes(f.cwe)), `${e.file} ${e.cwes}`);
+    assert.ok(report.environment.frameworks && Object.prototype.hasOwnProperty.call(report.environment.frameworks, framework), `${framework} detected`);
+    const unexpected = report.findings.filter((f) => f.file && f.line && ['PHP-SQLI-001', 'PHP-XSS-001', 'PHP-XSS-002', 'PHP-REDIR-001', 'PHP-CSRF-001'].includes(f.ruleId) &&
+      !truth.expectations.some((e) => e.file === f.file && e.line === f.line));
+    assert.deepStrictEqual(unexpected.map((f) => `${f.file}:${f.line} ${f.ruleId}`), [], 'no findings on protected code');
+  });
+}

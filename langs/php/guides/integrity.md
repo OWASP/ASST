@@ -37,3 +37,17 @@ parse_str($_SERVER['QUERY_STRING']);
 $name = (string) ($_POST['name'] ?? '');
 parse_str($_SERVER['QUERY_STRING'], $query);
 ```
+
+## Mass assignment {#mass-assignment}
+
+Passing all request fields to a model (`User::create($request->all())`) lets users set attributes they should not control, such as `is_admin`, `balance` or `user_id`.
+
+```php
+// Vulnerable
+class User extends Model { protected $guarded = []; }
+User::create($request->all());
+
+// Fixed: allow-list the fields and use validated data
+class User extends Model { protected $fillable = ['name', 'email']; }
+User::create($request->validated());
+```

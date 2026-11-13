@@ -52,3 +52,20 @@ el.textContent = 'Hi ' + decodeURIComponent(location.hash.slice(1));
 Never pass such values to `eval()`, `new Function()` or string arguments of `setTimeout()`/`setInterval()`. If HTML must be inserted, sanitize it with a maintained library such as DOMPurify.
 
 References: [OWASP DOM based XSS Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/DOM_based_XSS_Prevention_Cheat_Sheet.html).
+
+## Template escaping {#template-escaping}
+
+Template engines escape output by default; their "raw" forms switch that protection off:
+
+- **Blade:** `{{ $value }}` escapes, `{!! $value !!}` does not.
+- **Twig:** `{{ value }}` escapes, `{{ value|raw }}` and `{% autoescape false %}` do not.
+
+```blade
+{{-- Vulnerable --}}
+<p>{!! request('name') !!}</p>
+
+{{-- Fixed --}}
+<p>{{ request('name') }}</p>
+```
+
+Use the raw forms only for HTML you generated yourself or sanitized with an HTML sanitizer (for example HTML Purifier or Symfony's HtmlSanitizer). Never use them for request data or database fields that users can edit.

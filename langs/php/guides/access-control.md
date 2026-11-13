@@ -112,3 +112,22 @@ if (!hash_equals($_SESSION['csrf_token'] ?? '', (string) ($_POST['csrf_token'] ?
 Also set session cookies with `SameSite=Lax` (or `Strict`). Frameworks provide this out of the box (Laravel `@csrf`, Symfony forms, WordPress nonces).
 
 References: [OWASP CSRF Prevention Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html).
+
+## WordPress nonces and capabilities {#wordpress-nonces}
+
+Every `wp_ajax_*` and `admin_post_*` handler must check that the request was intended (nonce) and that the user is allowed to perform it (capability):
+
+```php
+add_action('wp_ajax_myplugin_save', 'myplugin_save');
+
+function myplugin_save() {
+    check_ajax_referer('myplugin_save');           // dies on an invalid nonce
+    if (!current_user_can('manage_options')) {
+        wp_send_json_error('forbidden', 403);
+    }
+    update_option('myplugin_title', sanitize_text_field(wp_unslash($_POST['title'] ?? '')));
+    wp_send_json_success();
+}
+```
+
+In the form or script, send the nonce with `wp_nonce_field('myplugin_save')` or `wp_create_nonce('myplugin_save')`. Handlers registered with `wp_ajax_nopriv_*` are reachable by anyone, so validate their input carefully.

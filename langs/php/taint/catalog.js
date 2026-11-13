@@ -378,7 +378,16 @@ function call(callee, args, e, ctx) {
     return { value: el.t ? V.step(V.join(el, glue && glue.t ? glue : null), line, name) : V.CLEAN };
   }
   if (name === 'explode' || name === 'str_split' || name === 'preg_split' || name === 'mb_str_split') return { value: arrayOf(name === 'explode' ? args[1] : a0, line, name) };
-  if (name === 'array_map') return { value: arrayOf(elementOf(args[1]), line, 'array_map') };
+  if (name === 'array_map') {
+    // a named callback (e.g. 'intval', 'esc_html') is applied to every element
+    const cb = str(a0);
+    let element = elementOf(args[1]);
+    if (cb && element.t && ctx.callCatalog) {
+      const r = ctx.callCatalog(`fn:${cb.toLowerCase().replace(/^\\/, '')}`, [element], line);
+      if (r && r.value && !(r.sinks && r.sinks.length)) element = r.value;
+    }
+    return { value: element.t ? arrayOf(element, line, 'array_map') : { t: false, arr: new Map([['*', element]]) } };
+  }
   if (ARRAY_FNS.includes(name)) {
     const joined = V.joinAll(args.map((x) => (x && x.arr ? V.joinAll([...x.arr.values()]) : x || V.CLEAN)));
     return { value: joined.t ? { ...propagate(joined, line, name), arr: new Map([['*', propagate(joined)]]) } : { t: false, arr: a0 && a0.arr ? new Map(a0.arr) : new Map() } };

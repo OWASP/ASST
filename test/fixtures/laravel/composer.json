@@ -1,0 +1,7 @@
+{
+    "name": "example/shop",
+    "require": {
+        "php": "^8.3",
+        "laravel/framework": "^11.0"
+    }
+}
