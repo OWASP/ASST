@@ -16,6 +16,8 @@ function versionLess(a, b) {
 }
 
 /** @returns {{env:object|null, hits:Array, notice:string|null}} */
+const onDate = (d) => (typeof d === 'string' ? ` on ${d}` : '');
+
 function phpRuntime(phpBin, today) {
   if (!phpBin) return { env: null, hits: [], notice: null };
   const res = runPhp(phpBin, "echo json_encode(['php'=>PHP_VERSION,'libxml'=>defined('LIBXML_DOTTED_VERSION')?LIBXML_DOTTED_VERSION:null,'os'=>PHP_OS_FAMILY]);");
@@ -30,9 +32,9 @@ function phpRuntime(phpBin, today) {
   const lc = lifecycle('php', env.php, today);
   env.phpLifecycle = lc;
   if (lc.status === 'eol') {
-    hits.push({ ruleId: 'PHP-COMP-001', message: `PHP ${env.php} reached end of life on ${lc.eol}; it no longer receives security fixes. Upgrade to a supported PHP version.` });
+    hits.push({ ruleId: 'PHP-COMP-001', message: `PHP ${env.php} reached end of life${onDate(lc.eol)}; it no longer receives security fixes. Upgrade to a supported PHP version.` });
   } else if (lc.status === 'security-only') {
-    hits.push({ ruleId: 'PHP-COMP-001', severity: 'info', message: `PHP ${env.php} receives security fixes only, until ${lc.eol}. Plan the upgrade to a newer PHP version.` });
+    hits.push({ ruleId: 'PHP-COMP-001', severity: 'info', message: `PHP ${env.php} receives security fixes only${typeof lc.eol === 'string' ? `, until ${lc.eol}` : ''}. Plan the upgrade to a newer PHP version.` });
   }
   if (env.libxml) {
     if (versionLess(env.libxml, '2.9.0')) hits.push({ ruleId: 'PHP-COMP-002', severity: 'high', message: `libxml ${env.libxml} loads external XML entities by default. Upgrade PHP/libxml (2.9.0 or newer).` });
@@ -68,7 +70,7 @@ async function databaseChecks(db, today) {
     const version = (info.version.match(/^\d+(\.\d+)*/) || [''])[0];
     const lc = lifecycle(product, version, today);
     env.database.lifecycle = lc;
-    if (lc.status === 'eol') hits.push({ ruleId: 'PHP-COMP-003', message: `${product === 'mariadb' ? 'MariaDB' : 'MySQL'} ${version} reached end of life on ${lc.eol}. Upgrade the database server.` });
+    if (lc.status === 'eol') hits.push({ ruleId: 'PHP-COMP-003', message: `${product === 'mariadb' ? 'MariaDB' : 'MySQL'} ${version} reached end of life${onDate(lc.eol)}. Upgrade the database server.` });
   } catch (err) {
     env.databaseError = err.message;
   }

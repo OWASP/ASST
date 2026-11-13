@@ -8,13 +8,24 @@ const { SEVERITIES, CONFIDENCES } = require('../finding');
 const SCHEMA = 'asst-report/1';
 const SNIPPET_CONTEXT = 3;
 
-function snippetFor(finding, project, cache) {
+/** Replaces every detected secret value with a masked placeholder. */
+function redactor(values) {
+  const list = [...(values || [])].filter((v) => typeof v === 'string' && v.length >= 3).sort((a, b) => b.length - a.length);
+  if (!list.length) return (l) => l;
+  return (line) => {
+    let out = line;
+    for (const v of list) if (out.includes(v)) out = out.split(v).join(`${'*'.repeat(8)}`);
+    return out;
+  };
+}
+
+function snippetFor(finding, project, cache, redact = (l) => l) {
   if (!finding.file || !finding.line) return null;
   const lines = cache.lines(path.join(project.root, finding.file));
   if (!lines) return null;
   const start = Math.max(1, finding.line - SNIPPET_CONTEXT);
   const end = Math.min(lines.length, finding.line + SNIPPET_CONTEXT);
-  return { startLine: start, lines: lines.slice(start - 1, end).map((l) => (l.length > 400 ? `${l.slice(0, 400)}…` : l)) };
+  return { startLine: start, lines: lines.slice(start - 1, end).map((l) => redact(l.length > 400 ? `${l.slice(0, 400)}…` : l)) };
 }
 
 function countBy(list, key, keys) {
@@ -29,7 +40,8 @@ function countBy(list, key, keys) {
  * @returns {object} report model
  */
 function buildModel(p) {
-  const findings = p.findings.map((f) => ({ ...f, snippet: f.snippet || snippetFor(f, p.project, p.cache) }));
+  const redact = redactor(p.redact);
+  const findings = p.findings.map((f) => ({ ...f, snippet: f.snippet || snippetFor(f, p.project, p.cache, redact) }));
   const finished = Date.now();
   return {
     schema: SCHEMA,
@@ -61,6 +73,7 @@ function buildModel(p) {
       fixed: p.fixed ? p.fixed.length : null,
     },
     environment: p.environment || {},
+    inventory: p.inventory || null,
     findings,
     fixed: p.fixed || [],
     notices: p.notices || [],

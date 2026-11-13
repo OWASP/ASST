@@ -9,7 +9,8 @@
   "scripts": {
     "test": "node scripts/run-tests.js",
     "bench": "node bench/run.js --write-results",
-    "bench:ci": "node bench/run.js --datasets fixtures,fixtures-app,dvwa,sard --sard-sample 2000 --versions head --check-baseline bench/baseline-metrics.json"
+    "bench:ci": "node bench/run.js --datasets fixtures,fixtures-app,dvwa,sard --sard-sample 2000 --versions head --check-baseline bench/baseline-metrics.json",
+    "update-data": "node scripts/update-data.js"
   },
   "repository": {
     "type": "git",

@@ -31,6 +31,8 @@ const OWASP_2025 = {
   A10: 'A10:2025 Mishandling of Exceptional Conditions',
 };
 
+const { commonRules } = require('../../../core/rules/common');
+
 const R = (id, title, cwe, a2025, a2021, severity, guide, pdf, summary) => ({ id, title, cwe, category: `${a2025}:2025`, owasp2021: `${a2021}:2021`, severity, guide, pdf: PDF[pdf], summary });
 
 const RULES = [
@@ -135,6 +137,9 @@ const RULES = [
     'Stored passwords use a general-purpose hash (MD5/SHA family) instead of password_hash().'),
   R('PHP-DB-003', 'Password salts are reused', 'CWE-760', 'A04', 'A02', 'medium', 'cryptography#password-storage', 'crypto',
     'Several rows share the same salt value.'),
+
+  // dependencies and secrets (shared with other language plugins)
+  ...commonRules(R),
 ];
 
 const BY_ID = new Map(RULES.map((r) => [r.id, r]));

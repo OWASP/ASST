@@ -14,13 +14,27 @@ ASST 2.0 is a major upgrade built on the foundation of the original thesis relea
 - Cross-file analysis: `include`/`require` targets are resolved (including `__DIR__`, `define()`d paths and file names chosen in a `switch`) and run in the including scope, and functions and classes are resolved across the whole project. A vulnerability inside a shared helper lists the entry scripts that reach it.
 - Framework packs for Laravel, WordPress and Symfony, detected automatically. Framework request objects, escaping helpers (`e()`, `esc_html()`, `esc_attr()`, `esc_url()`, `absint()`, `sanitize_*()`), query builders, `$wpdb` and HTTP clients are part of the data-flow analysis. New checks cover raw Blade (`{!! !!}`) and Twig (`|raw`, `autoescape false`) output, mass assignment (`$guarded = []` with `create($request->all())`), debug mode in `.env`, `config/app.php` and `wp-config.php`, CSRF exemptions in `VerifyCsrfToken`, `$wpdb` queries built without `prepare()`, and WordPress AJAX/admin-post handlers without nonce and capability checks. CSRF checks recognize `@csrf`, `csrf_field()`, `wp_nonce_field()` and Symfony `csrf_token()`. The report header lists the detected frameworks.
 - Callback-aware data flow for `array_map()` with built-in callbacks such as `intval` or `htmlspecialchars`.
+- Software supply chain checks. Every report gets a Components section listing:
+  - the dependencies from `composer.lock`, `package-lock.json` (v1–v3) and `yarn.lock`;
+  - JavaScript libraries copied into the project: jQuery, jQuery UI, Bootstrap, AngularJS, Lodash, Underscore, Moment.js, Handlebars, Vue, DOMPurify, TinyMCE and Knockout.
+
+  Published advisories for these libraries ship with ASST. With `--online` (or `ONLINE_CHECKS: true`), every package is checked against OSV.dev. Only package names and versions are sent, and answers are cached for a day.
+- End-of-life checks for frameworks and libraries: Laravel, Symfony, Drupal, WordPress, jQuery, Bootstrap, AngularJS and Vue. Also new: detection of development packages installed in a production `vendor/` folder, and of abandoned Composer packages.
+- Secrets detection covers:
+  - API keys and tokens with well-known formats: AWS, GitHub, GitLab, Slack, Stripe, Google, SendGrid, npm, OpenAI and Anthropic;
+  - private keys and JSON Web Tokens;
+  - passwords in connection URLs;
+  - password, secret and key assignments in code, `.env` files and configuration files.
+
+  Secrets are masked everywhere in the reports, including the code snippets of other findings.
+- `npm run update-data` refreshes the bundled lifecycle and advisory data. `--online` also refreshes lifecycle dates from endoflife.date during a scan.
 - Findings are mapped to the OWASP Top 10:2025 (with the 2021 category) and to CWE, and carry a severity, a confidence level and a code snippet.
 - Interactive HTML report: one self-contained file that works offline, with severity tiles, search, filters (severity, confidence, OWASP category), grouping by category/file/rule, code snippets with the line highlighted, data-flow traces, dark mode and print layout. Content is fully HTML-escaped and protected by a strict Content-Security-Policy.
 - SARIF 2.1.0 output (`--format sarif`) for GitHub code scanning and IDE viewers, with CWE/OWASP tags, security-severity scores, stable fingerprints and data-flow code flows.
 - Markdown summary (`--format md`) for pull-request comments and CI job summaries.
 - JSON report (`--format json`) with a versioned schema.
 - Baseline comparison: `--update-baseline` records the current findings, and `--baseline` marks later findings as new or unchanged and lists fixed ones in every report format.
-- Up-to-date lifecycle data (`data/eol.json`) for PHP, MySQL and MariaDB; stored passwords are classified by hash format (bcrypt/argon2, fast hashes, plain text) and the database server version is checked against its support dates.
+- Up-to-date lifecycle data (`data/eol.json`) for PHP, MySQL, MariaDB, Node.js and the frameworks and libraries above; stored passwords are classified by hash format (bcrypt/argon2, fast hashes, plain text) and the database server version is checked against its support dates.
 - New options: `--second-order` (treat session data, files, database rows and command output as untrusted), `--min-severity`, `--min-confidence`, `--fail-on` for CI, `--rules`/`--disable-rules`, `--baseline`/`--update-baseline`, and inline `asst-ignore[RULE-ID]` comments.
 - Command-line options (`node main.js --help`): choose the folder to scan (`--path`), report location (`--out`), exclusions (`--exclude`), dependency folders (`--include-vendor`), PHP binary (`--php-bin`), skip database checks (`--no-db`), quiet and no-color modes. Running `node main.js` without options works exactly as before.
 - `.asstignore` file and `EXCLUDE_PATHS` setting to skip paths; `YOUR_WEBAPP_DBMS_PORT` setting; `ASST_DB_PASSWORD` (and `ASST_DB_HOST`, `ASST_DB_USER`, `ASST_DB_NAME`, `ASST_DB_PORT`, `ASST_PHP_BIN`) environment variables so credentials do not have to be stored in a file.

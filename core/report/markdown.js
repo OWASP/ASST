@@ -39,6 +39,11 @@ function render(model, { maxDetailed = 25 } = {}) {
   } else {
     out.push('No findings at the current reporting threshold. ✅', '');
   }
+  const inv = model.inventory && model.inventory.packages;
+  if (inv && inv.length) {
+    const vulnerable = inv.filter((c) => c.advisories).length;
+    out.push(`Components: ${inv.length} packages and bundled libraries, ${vulnerable} with published advisories (${model.inventory.advisorySource}).`, '');
+  }
   if (s.hidden) out.push(`_${s.hidden} lower-confidence or lower-severity findings are not listed._`, '');
   return `${out.join('\n')}\n`;
 }

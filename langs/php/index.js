@@ -20,6 +20,8 @@ const manualReview = require('./notices');
 const { loadGuides, pickGuides } = require('../../core/guides');
 const frameworks = require('./frameworks');
 const { extend: extendCatalog } = require('./taint/catalog');
+const { scanSupplyChain } = require('../../core/supply');
+const secrets = require('../../core/secrets');
 const { createFinding, fingerprint, dedupe, compareFindings, atLeastSeverity, atLeastConfidence } = require('../../core/finding');
 const { applyInlineSuppressions, loadBaseline, writeBaseline, compareWithBaseline } = require('../../core/suppress');
 const { buildModel } = require('../../core/report/model');
@@ -97,7 +99,10 @@ function makeFinding(ruleId, base, ctx) {
     guide: meta.guide,
     pdf: meta.pdf,
   });
-  f.fingerprint = fingerprint(ruleId, f.file || '', f.file && f.line ? ctx.lineOf(f.file, f.line) : '', f.file ? '' : f.message);
+  let lineText = f.file && f.line ? ctx.lineOf(f.file, f.line) || '' : '';
+  // secrets are fingerprinted on the masked line (nothing derived from the value is stored)
+  for (const v of [].concat(base.redact || [])) lineText = lineText.split(v).join('********');
+  f.fingerprint = fingerprint(ruleId, f.file || '', lineText, f.file ? '' : f.message);
   return f;
 }
 
@@ -137,12 +142,20 @@ module.exports = {
     if (detected.length && !config.quiet) console.log(ansi.paint(`Frameworks: ${detected.map((d) => d.pack.name + (d.info.version ? ` ${d.info.version}` : '')).join(', ')}`, 'cyan'));
 
     const phpFiles = [];
+    const redact = new Set(); // secret values, masked in every report snippet
+    const keep = (h) => {
+      if (h.redact) for (const v of [].concat(h.redact)) redact.add(v);
+      return h;
+    };
     for (const file of project.files) {
       const isPhp = EXTENSIONS.includes(file.ext);
       const needsText = isPhp || textRules.TEMPLATE_EXT.has(file.ext) || ['js', 'mjs', 'cjs', 'css'].includes(file.ext);
-      if (!needsText) continue;
+      const wantsSecrets = secrets.wants(file);
+      if (!needsText && !wantsSecrets) continue;
       const text = cache.text(file.abs);
       if (text === null) continue;
+      for (const h of secrets.scanSecrets(file, text)) raw.push(makeFinding(h.ruleId, { ...keep(h), file: file.rel }, ctx));
+      if (!needsText) continue;
       const lines = cache.lines(file.abs);
       stats.filesAnalyzed++;
       if (isPhp) phpFiles.push({ rel: file.rel, text });
@@ -159,7 +172,7 @@ module.exports = {
     const taint = analyzeProject(phpFiles, options, (rel, ast, parsed) => {
       stats.parse[parsed.status === 'failed' ? 'failed' : parsed.status]++;
       if (ast) {
-        for (const h of runAstRules(ast)) raw.push(makeFinding(h.ruleId, { ...h, file: rel }, ctx));
+        for (const h of runAstRules(ast)) raw.push(makeFinding(h.ruleId, { ...keep(h), file: rel }, ctx));
       } else {
         parseFailures.push(`${rel} (${parsed.error})`);
         for (const h of textRules.phpFallback(cache.lines(path.join(project.root, rel)) || [])) raw.push(makeFinding(h.ruleId, { ...h, file: rel }, ctx));
@@ -186,6 +199,21 @@ module.exports = {
         ...(d.pack.configRules ? d.pack.configRules(phpFiles) : []),
       ];
       for (const h of hits) raw.push(makeFinding(h.ruleId, h, ctx));
+    }
+
+    // software supply chain: lock files, bundled libraries, end-of-life frameworks
+    const extraComponents = [];
+    const wp = detected.find((d) => d.id === 'wordpress' && d.info.kind === 'core' && d.info.version);
+    if (wp) {
+      const ver = project.files.find((f) => f.rel.endsWith('wp-includes/version.php'));
+      const verLine = ver ? (cache.lines(ver.abs) || []).findIndex((l) => /\$wp_version\s*=/.test(l)) + 1 : 0;
+      extraComponents.push({ ecosystem: 'WordPress', name: 'wordpress', label: 'WordPress', version: wp.info.version, eolProduct: 'wordpress', file: ver ? ver.rel : null, line: verLine || null });
+    }
+    const supply = await scanSupplyChain({ project, readText, config, notices, extraComponents });
+    for (const h of supply.hits) {
+      const finding = makeFinding(h.ruleId, h, ctx);
+      if (h.component) finding.component = h.component;
+      raw.push(finding);
     }
 
     const usesPhp = project.files.some((f) => EXTENSIONS.includes(f.ext));
@@ -239,7 +267,7 @@ module.exports = {
 
     const scanNotices = notices.list.map((n) => ({ kind: n.kind, message: n.message }));
     const model = buildModel({
-      config, project, cache, startedAt, stats, environment, language: 'php', fixed,
+      config, project, cache, startedAt, stats, environment, language: 'php', fixed, redact, inventory: supply.inventory,
       findings: visible,
       notices: [...scanNotices, ...manualReview],
       rules: RULES.filter((r) => visible.some((f) => f.ruleId === r.id)),

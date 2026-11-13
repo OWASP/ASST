@@ -24,6 +24,8 @@ function print(model, { quiet, reportFiles, maxListed = 15 }) {
   }
   const counts = SEVERITIES.filter((sev) => s.bySeverity[sev]).map((sev) => ansi.paint(`${s.bySeverity[sev]} ${sev}`, COLOR[sev], 'bold'));
   out.push(`Findings: ${s.total}${counts.length ? ` (${counts.join(', ')})` : ''}`);
+  const inv = model.inventory && model.inventory.packages;
+  if (inv && inv.length) out.push(ansi.paint(`Components: ${inv.length} (${inv.filter((c) => c.advisories).length} with advisories, ${inv.filter((c) => c.lifecycle === 'eol').length} end of life; advisories from ${model.inventory.advisorySource})`, 'gray'));
   if (s.hidden) out.push(ansi.paint(`${s.hidden} lower-confidence or lower-severity findings hidden (see --min-confidence / --min-severity).`, 'gray'));
   if (s.suppressed) out.push(ansi.paint(`${s.suppressed} findings suppressed by asst-ignore comments.`, 'gray'));
   if (s.fixed !== null) out.push(ansi.paint(`Compared with the baseline: ${model.findings.filter((f) => f.baseline === 'new').length} new, ${s.fixed} fixed.`, 'cyan'));

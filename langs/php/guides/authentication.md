@@ -55,3 +55,25 @@ $db = new mysqli(getenv('DB_HOST'), getenv('DB_USER'), getenv('DB_PASS'), getenv
 - Use separate credentials for development and production.
 - Give the database user only the permissions the application needs.
 - Rotate any secret that has been committed to a repository.
+
+## Secrets and API keys {#secrets}
+
+API keys, access tokens, private keys and passwords in project files are exposed to everyone who can read the code: other developers, backups, build logs, and, for files inside the web root, possibly visitors.
+
+```php
+// Vulnerable
+$stripe = new \Stripe\StripeClient('sk_live_...');
+
+// Fixed: the key comes from the environment of the server
+$stripe = new \Stripe\StripeClient(getenv('STRIPE_SECRET_KEY'));
+```
+
+- Keep secrets in environment variables, a `.env` file **outside** the web root that is never committed, or a secrets manager (for example HashiCorp Vault or your cloud provider's secret store).
+- Commit only a `.env.example` with placeholder values.
+- When a secret has been committed or published, **rotate it first**: revoke the old key at the provider and issue a new one. Removing it from the latest commit is not enough, because it stays in the history and in every clone.
+- Restrict keys to what they need: allowed domains or IP addresses, read-only scopes, short lifetimes.
+- Enable secret scanning in your repository host (for example GitHub push protection) so new secrets are blocked before they are pushed.
+
+ASST masks the secrets it finds in every report: only the type and length of the value are shown.
+
+References: [OWASP Secrets Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html).

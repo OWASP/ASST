@@ -315,7 +315,7 @@ function secretRules(nodes) {
   const hits = [];
   const check = (arg, n) => {
     const s = arg && (arg.kind === 'string' || arg.kind === 'nowdoc') ? String(arg.value) : null;
-    if (s !== null && !PLACEHOLDERS.test(s.trim()) && s.length >= 4) hits.push({ ruleId: 'PHP-SECRET-001', line: lineOf(n), column: colOf(n) });
+    if (s !== null && !PLACEHOLDERS.test(s.trim()) && s.length >= 4) hits.push({ ruleId: 'PHP-SECRET-001', line: lineOf(n), column: colOf(n), redact: s });
   };
   nodes.forEach((n) => {
     if (n.kind === 'call') {
@@ -324,7 +324,7 @@ function secretRules(nodes) {
       if (name === 'pg_connect') {
         const s = literalString((n.arguments || [])[0]);
         const m = s && /password\s*=\s*'?([^'\s]+)/i.exec(s);
-        if (m && !PLACEHOLDERS.test(m[1])) hits.push({ ruleId: 'PHP-SECRET-001', line: lineOf(n), column: colOf(n) });
+        if (m && !PLACEHOLDERS.test(m[1])) hits.push({ ruleId: 'PHP-SECRET-001', line: lineOf(n), column: colOf(n), redact: m[1] });
       }
       if (name === 'define' && n.arguments && n.arguments.length >= 2) {
         const key = literalString(n.arguments[0]);

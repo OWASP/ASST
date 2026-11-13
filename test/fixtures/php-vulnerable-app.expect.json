@@ -5,13 +5,18 @@
       "CWE-538"
     ],
     ".env": [
-      "CWE-538"
+      "CWE-538",
+      "CWE-798"
     ],
     "composer.json": [
       "CWE-538"
     ],
     "composer.lock": [
       "CWE-538"
+    ],
+    "assets/js/jquery-1.12.4.min.js": [
+      "CWE-1395",
+      "CWE-1104"
     ]
   },
   "project": [
