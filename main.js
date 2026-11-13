@@ -18,13 +18,13 @@ else if(config.USED_PROGRAMMING_LANGUAGE.toLowerCase() == "c#"){
 }
 else {
 	console.log();
-	consol.log("Invalid chosen programming language, exiting..");
+	console.log("Invalid chosen programming language, exiting..");
 	process.exit();
 }
 
 if(start != ""){
 	new start();
-	
+
 	const totalScanTime = (Date.now() / 1000 | 0) - timestampBeforeScanStarted;
 	console.log("Total scan time: " + totalScanTime + " Seconds");
 	console.log();
