@@ -1,0 +1,8 @@
+{
+    "require": {
+        "php": ">=8.2",
+        "symfony/framework-bundle": "^7.1",
+        "twig/twig": "^3.0",
+        "doctrine/dbal": "^4.0"
+    }
+}

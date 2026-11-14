@@ -1,0 +1,2682 @@
+{
+ "source": "https://osv.dev (npm ecosystem)",
+ "asOf": "2026-11-13",
+ "note": "Advisories for front-end libraries that are often copied into web projects. Refreshed with npm run update-data; --online scans query OSV.dev directly.",
+ "packages": {
+  "jquery": [
+   {
+    "id": "GHSA-2pqj-h3vj-pqgw",
+    "aliases": [
+     "CVE-2012-6708"
+    ],
+    "summary": "Cross-Site Scripting in jquery",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.9.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-579v-mp3v-rrw5",
+    "aliases": [
+     "CVE-2011-4969"
+    ],
+    "summary": "jQuery vulnerable to Cross-Site Scripting (XSS)",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.6.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-6c3j-c64m-qhgq",
+    "aliases": [
+     "CVE-2019-11358"
+    ],
+    "summary": "XSS in jQuery as used in Drupal, Backdrop CMS, and other products",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "1.1.4"
+      },
+      {
+       "fixed": "3.4.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-gxr4-xjj5-5px2",
+    "aliases": [
+     "CVE-2020-11022"
+    ],
+    "summary": "Potential XSS vulnerability in jQuery",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "1.12.0"
+      },
+      {
+       "fixed": "3.5.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-jpcq-cgw6-v4j6",
+    "aliases": [
+     "CVE-2020-11023"
+    ],
+    "summary": "Potential XSS vulnerability in jQuery",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "1.0.3"
+      },
+      {
+       "fixed": "3.5.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-mhpp-875w-9cpv",
+    "aliases": [
+     "CVE-2016-10707"
+    ],
+    "summary": "Denial of Service in jquery",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "3.0.0-rc.1"
+      },
+      {
+       "fixed": "3.0.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-q4m3-2j7h-f7xw",
+    "aliases": [
+     "CVE-2020-7656"
+    ],
+    "summary": "Cross-Site Scripting in jquery",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "1.2.1"
+      },
+      {
+       "fixed": "1.9.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-rmxg-73gg-4p98",
+    "aliases": [
+     "CVE-2015-9251"
+    ],
+    "summary": "Cross-Site Scripting (XSS) in jquery",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.12.2"
+      }
+     ],
+     [
+      {
+       "introduced": "1.12.3"
+      },
+      {
+       "fixed": "3.0.0"
+      }
+     ]
+    ]
+   }
+  ],
+  "jquery-ui": [
+   {
+    "id": "GHSA-9gj3-hwp5-pmwc",
+    "aliases": [
+     "CVE-2021-41182"
+    ],
+    "summary": "XSS in the `altField` option of the Datepicker widget in jquery-ui",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.13.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-gpqq-952q-5327",
+    "aliases": [
+     "CVE-2021-41184"
+    ],
+    "summary": "XSS in the `of` option of the `.position()` util in jquery-ui",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.13.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-h6gj-6jjq-h8g9",
+    "aliases": [
+     "CVE-2022-31160"
+    ],
+    "summary": "jQuery UI vulnerable to XSS when refreshing a checkboxradio with an HTML-like initial text label",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.13.2"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-hpcf-8vf9-q4gj",
+    "aliases": [
+     "CVE-2016-7103"
+    ],
+    "summary": "jQuery-UI vulnerable to Cross-site Scripting in dialog closeText",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.12.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-j7qv-pgf6-hvh4",
+    "aliases": [
+     "CVE-2021-41183"
+    ],
+    "summary": "XSS in `*Text` options of the Datepicker widget in jquery-ui",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.13.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-qqxp-xp9v-vvx6",
+    "aliases": [
+     "CVE-2012-6662"
+    ],
+    "summary": "jquery-ui Tooltip widget vulnerable to XSS",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.10.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-wcm2-9c89-wmfm",
+    "aliases": [
+     "CVE-2010-5312"
+    ],
+    "summary": "Cross-site Scripting in jquery-ui",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "1.7.0"
+      },
+      {
+       "fixed": "1.10.0"
+      }
+     ]
+    ]
+   }
+  ],
+  "bootstrap": [
+   {
+    "id": "GHSA-3mgp-fx93-9xv5",
+    "aliases": [
+     "CVE-2018-20676"
+    ],
+    "summary": "XSS vulnerability that affects bootstrap",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-3wqf-4x89-9g79",
+    "aliases": [
+     "CVE-2018-14040"
+    ],
+    "summary": "Bootstrap vulnerable to Cross-Site Scripting (XSS)",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.1.2"
+      }
+     ],
+     [
+      {
+       "introduced": "2.3.0"
+      },
+      {
+       "fixed": "3.4.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-4p24-vmcr-4gqj",
+    "aliases": [
+     "CVE-2016-10735"
+    ],
+    "summary": "Bootstrap Cross-site Scripting vulnerability",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "2.0.4"
+      },
+      {
+       "fixed": "3.4.0"
+      }
+     ],
+     [
+      {
+       "introduced": "4.0.0-beta"
+      },
+      {
+       "fixed": "4.0.0-beta.2"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-7mvr-5x2g-wfc8",
+    "aliases": [
+     "CVE-2018-14042"
+    ],
+    "summary": "Bootstrap Cross-site Scripting vulnerability",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.1.2"
+      }
+     ],
+     [
+      {
+       "introduced": "2.3.0"
+      },
+      {
+       "fixed": "3.4.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-9v3m-8fp8-mj99",
+    "aliases": [
+     "CVE-2019-8331"
+    ],
+    "summary": "Bootstrap Vulnerable to Cross-Site Scripting",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.3.1"
+      }
+     ],
+     [
+      {
+       "introduced": "3.0.0"
+      },
+      {
+       "fixed": "3.4.1"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-ph58-4vrj-w6hr",
+    "aliases": [
+     "CVE-2018-20677"
+    ],
+    "summary": "bootstrap Cross-site Scripting vulnerability",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-pj7m-g53m-7638",
+    "aliases": [
+     "CVE-2018-14041"
+    ],
+    "summary": "Bootstrap Cross-site Scripting vulnerability",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.1.2"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-q58r-hwc8-rm9j",
+    "aliases": [
+     "CVE-2025-1647"
+    ],
+    "summary": "Bootstrap Vulnerable to Cross-Site Scripting in its Popover and Tooltip Components",
+    "severity": "medium",
+    "ranges": [],
+    "versions": [
+     "3.4.1"
+    ]
+   },
+   {
+    "id": "GHSA-vxmc-5x29-h64v",
+    "aliases": [
+     "CVE-2024-6485"
+    ],
+    "summary": "Bootstrap Cross-Site Scripting (XSS) vulnerability for data-* attributes",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "1.4.0"
+      },
+      {
+       "last_affected": "3.4.1"
+      }
+     ]
+    ]
+   }
+  ],
+  "angular": [
+   {
+    "id": "GHSA-28hp-fgcr-2r4h",
+    "aliases": [],
+    "summary": "Cross-Site Scripting via JSONP",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.6.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-2qqx-w9hr-q5gx",
+    "aliases": [
+     "CVE-2023-26117"
+    ],
+    "summary": "angular vulnerable to regular expression denial of service via the $resource service",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "last_affected": "1.8.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-2vrf-hf26-jrp5",
+    "aliases": [
+     "CVE-2023-26116"
+    ],
+    "summary": "angular vulnerable to regular expression denial of service via the angular.copy() utility",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "last_affected": "1.8.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-4w4v-5hc9-xrr2",
+    "aliases": [
+     "CVE-2024-21490"
+    ],
+    "summary": "angular vulnerable to super-linear runtime due to backtracking",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "1.3.0"
+      },
+      {
+       "last_affected": "1.8.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-5cp4-xmrw-59wf",
+    "aliases": [],
+    "summary": "XSS via JQLite DOM manipulation functions in AngularJS",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.8.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-7x27-g8rg-x87w",
+    "aliases": [
+     "CVE-2026-11998"
+    ],
+    "summary": "Angular's deprecated package has a Cross-Site Scripting issue",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "1.2.0-rc.3"
+      },
+      {
+       "last_affected": "1.8.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-89mq-4x47-5v83",
+    "aliases": [
+     "CVE-2019-10768"
+    ],
+    "summary": "angular Prototype Pollution vulnerability",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.7.9"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-j58c-ww9w-pwp5",
+    "aliases": [
+     "CVE-2025-0716"
+    ],
+    "summary": "AngularJS improperly sanitizes SVG elements",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "last_affected": "1.8.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-m2h2-264f-f486",
+    "aliases": [
+     "CVE-2022-25844"
+    ],
+    "summary": "angular vulnerable to regular expression denial of service (ReDoS)",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "1.7.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-m9gf-397r-hwpg",
+    "aliases": [
+     "CVE-2024-8372"
+    ],
+    "summary": "AngularJS allows attackers to bypass common image source restrictions",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "1.3.0-rc.4"
+      },
+      {
+       "last_affected": "1.8.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-mhp6-pxh8-r675",
+    "aliases": [
+     "CVE-2020-7676"
+    ],
+    "summary": "Angular vulnerable to Cross-site Scripting",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.8.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-mqm9-c95h-x2p6",
+    "aliases": [
+     "CVE-2024-8373"
+    ],
+    "summary": "AngularJS allows attackers to bypass common image source restrictions",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "last_affected": "1.8.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-prc3-vjfx-vhm9",
+    "aliases": [
+     "CVE-2022-25869"
+    ],
+    "summary": "Angular (deprecated package) Cross-site Scripting",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "last_affected": "1.8.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-qwqh-hm9m-p5hr",
+    "aliases": [
+     "CVE-2023-26118"
+    ],
+    "summary": "angular vulnerable to regular expression denial of service via the <input type=\"url\"> element",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "last_affected": "1.8.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-r5fx-8r73-v86c",
+    "aliases": [
+     "CVE-2019-14863"
+    ],
+    "summary": "AngularJS Cross-site Scripting due to failure to sanitize `xlink.href` attributes",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.5.0-beta.1"
+      }
+     ]
+    ]
+   }
+  ],
+  "lodash": [
+   {
+    "id": "GHSA-29mw-wpgm-hmr9",
+    "aliases": [
+     "CVE-2020-28500"
+    ],
+    "summary": "Regular Expression Denial of Service (ReDoS) in lodash",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.17.21"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-35jh-r3h4-6jhm",
+    "aliases": [
+     "CVE-2021-23337"
+    ],
+    "summary": "Command Injection in lodash",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.17.21"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-4xc9-xhrj-v574",
+    "aliases": [
+     "CVE-2018-16487"
+    ],
+    "summary": "Prototype Pollution in lodash",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.17.11"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-f23m-r3pf-42rh",
+    "aliases": [
+     "CVE-2026-2950"
+    ],
+    "summary": "lodash vulnerable to prototype pollution via array-path bypass in `_.unset`, `_.omit`, and `_.pullAt",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "4.17.23"
+      },
+      {
+       "fixed": "4.18.1"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-fvqr-27wr-82fm",
+    "aliases": [
+     "CVE-2018-3721"
+    ],
+    "summary": "Prototype Pollution in lodash",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.17.5"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-jf85-cpcp-j695",
+    "aliases": [
+     "CVE-2019-10744"
+    ],
+    "summary": "Prototype Pollution in lodash",
+    "severity": "critical",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.17.12"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-p6mc-m468-83gw",
+    "aliases": [
+     "CVE-2020-8203"
+    ],
+    "summary": "Prototype Pollution in lodash",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "3.7.0"
+      },
+      {
+       "fixed": "4.17.19"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-r5fr-rjxr-66jc",
+    "aliases": [
+     "CVE-2026-4800"
+    ],
+    "summary": "lodash vulnerable to Code Injection via `_.template` imports key names",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.18.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-x5rq-j2xg-h7qm",
+    "aliases": [
+     "CVE-2019-1010266"
+    ],
+    "summary": "Regular Expression Denial of Service (ReDoS) in lodash",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "4.7.0"
+      },
+      {
+       "fixed": "4.17.11"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-xxjr-mmjv-4gpg",
+    "aliases": [
+     "CVE-2025-13465"
+    ],
+    "summary": "Lodash has Prototype Pollution Vulnerability in `_.unset`, `_.omit`, and `_.pullAt` functions",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.17.23"
+      }
+     ]
+    ]
+   }
+  ],
+  "underscore": [
+   {
+    "id": "GHSA-cf4h-3jhx-xvhq",
+    "aliases": [
+     "CVE-2021-23358"
+    ],
+    "summary": "Arbitrary Code Execution in underscore",
+    "severity": "critical",
+    "ranges": [
+     [
+      {
+       "introduced": "1.3.2"
+      },
+      {
+       "fixed": "1.12.1"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-qpx9-hpmf-5gmw",
+    "aliases": [
+     "CVE-2026-27601"
+    ],
+    "summary": "Underscore has unlimited recursion in _.flatten and _.isEqual, potential for DoS attack",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.13.8"
+      }
+     ]
+    ]
+   }
+  ],
+  "moment": [
+   {
+    "id": "GHSA-446m-mv8f-q348",
+    "aliases": [
+     "CVE-2017-18214"
+    ],
+    "summary": "Regular Expression Denial of Service in moment",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "2.19.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-4p3w-j4w9-5jqw",
+    "aliases": [
+     "CVE-2026-17495"
+    ],
+    "summary": "moment vulnerable to Path Traversal via crafted non-string locale name",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "2.29.2"
+      },
+      {
+       "fixed": "2.31.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-87vv-r9j6-g5qv",
+    "aliases": [
+     "CVE-2016-4055"
+    ],
+    "summary": "Regular Expression Denial of Service in moment",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "2.11.2"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-8hfj-j24r-96c4",
+    "aliases": [
+     "CVE-2022-24785"
+    ],
+    "summary": "Path Traversal: 'dir/../../filename' in moment.locale",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "2.29.2"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-wc69-rhjr-hc9g",
+    "aliases": [
+     "CVE-2022-31129"
+    ],
+    "summary": "Moment.js vulnerable to Inefficient Regular Expression Complexity",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "2.18.0"
+      },
+      {
+       "fixed": "2.29.4"
+      }
+     ]
+    ]
+   }
+  ],
+  "handlebars": [
+   {
+    "id": "GHSA-2cf5-4w76-r9qv",
+    "aliases": [],
+    "summary": "Arbitrary Code Execution in handlebars",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.0.8"
+      }
+     ],
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.5.2"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-2qvq-rjwj-gvw9",
+    "aliases": [
+     "CVE-2026-33916"
+    ],
+    "summary": "Handlebars.js has Prototype Pollution Leading to XSS through Partial Template Injection",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.7.9"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-2w6w-674q-4c4q",
+    "aliases": [
+     "CVE-2026-33937"
+    ],
+    "summary": "Handlebars.js has JavaScript Injection via AST Type Confusion",
+    "severity": "critical",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.7.9"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-3cqr-58rm-57f8",
+    "aliases": [
+     "CVE-2019-20920"
+    ],
+    "summary": "Arbitrary Code Execution in Handlebars",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.0.8"
+      }
+     ],
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.5.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-3mfm-83xf-c92r",
+    "aliases": [
+     "CVE-2026-33938"
+    ],
+    "summary": "Handlebars.js has JavaScript Injection via AST Type Confusion by tampering @partial-block",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.7.9"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-442j-39wm-28r2",
+    "aliases": [],
+    "summary": "Handlebars.js has a Property Access Validation Bypass in container.lookup",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.7.9"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-62gr-4qp9-h98f",
+    "aliases": [
+     "CVE-2019-20922"
+    ],
+    "summary": "Regular Expression Denial of Service in Handlebars",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.4.5"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-765h-qjxv-5f44",
+    "aliases": [
+     "CVE-2021-23383"
+    ],
+    "summary": "Prototype Pollution in handlebars",
+    "severity": "critical",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.7.7"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-7rx3-28cr-v5wh",
+    "aliases": [],
+    "summary": "Handlebars.js has a Prototype Method Access Control Gap via Missing __lookupSetter__ Blocklist Entry",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "4.6.0"
+      },
+      {
+       "fixed": "4.7.9"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-8r5x-fm3f-whwj",
+    "aliases": [
+     "CVE-2026-106446"
+    ],
+    "summary": "Handlebars: JavaScript Injection via AST Type Confusion in compile (bypass of CVE-2026-33937)",
+    "severity": "critical",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.7.10"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-9cx6-37pm-9jff",
+    "aliases": [
+     "CVE-2026-33939"
+    ],
+    "summary": "Handlebars.js has Denial of Service via Malformed Decorator Syntax in Template Compilation",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.7.9"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-9prh-257w-9277",
+    "aliases": [
+     "CVE-2015-8861"
+    ],
+    "summary": "Cross-Site Scripting in handlebars",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.0.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-f2jv-r9rf-7988",
+    "aliases": [
+     "CVE-2021-23369"
+    ],
+    "summary": "Remote code execution in handlebars when compiling templates",
+    "severity": "critical",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.7.7"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-f52g-6jhx-586p",
+    "aliases": [],
+    "summary": "Denial of Service in handlebars",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.4.5"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-g9r4-xpmj-mj65",
+    "aliases": [],
+    "summary": "Prototype Pollution in handlebars",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.0.8"
+      }
+     ],
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.5.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-p8wg-vrv2-v86f",
+    "aliases": [
+     "CVE-2026-106445"
+    ],
+    "summary": "Handlebars: JavaScript Injection via Own Property Check Bypass",
+    "severity": "critical",
+    "ranges": [
+     [
+      {
+       "introduced": "3.0.0"
+      },
+      {
+       "fixed": "4.7.10"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-q2c6-c6pm-g3gh",
+    "aliases": [],
+    "summary": "Arbitrary Code Execution in handlebars",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.0.8"
+      }
+     ],
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.5.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-q42p-pg8m-cqh6",
+    "aliases": [],
+    "summary": "Prototype Pollution in handlebars",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "4.1.0"
+      },
+      {
+       "fixed": "4.1.2"
+      }
+     ],
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.0.14"
+      }
+     ],
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.0.7"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-w457-6q6x-cgp9",
+    "aliases": [
+     "CVE-2019-19919"
+    ],
+    "summary": "Prototype Pollution in handlebars",
+    "severity": "critical",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.3.0"
+      }
+     ],
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.0.8"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-xhpv-hc6g-r9c6",
+    "aliases": [
+     "CVE-2026-33940"
+    ],
+    "summary": "Handlebars.js has JavaScript Injection via AST Type Confusion when passing an object as dynamic partial",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.7.9"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-xjpj-3mr7-gcpf",
+    "aliases": [
+     "CVE-2026-33941"
+    ],
+    "summary": "Handlebars.js has JavaScript Injection in CLI Precompiler via Unescaped Names and Options",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.7.9"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-xw65-4hp5-5hc7",
+    "aliases": [
+     "CVE-2026-106444"
+    ],
+    "summary": "Handlebars: JavaScript Injection via Unsafe Inline Embedding of Precompiled Templates",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "4.0.0"
+      },
+      {
+       "fixed": "4.7.10"
+      }
+     ]
+    ]
+   }
+  ],
+  "vue": [
+   {
+    "id": "GHSA-5j4c-8p2g-v4jx",
+    "aliases": [
+     "CVE-2024-9506"
+    ],
+    "summary": "ReDoS vulnerability in vue package that is exploitable through inefficient regex evaluation in the parseHTML function",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "2.0.0-alpha.1"
+      },
+      {
+       "fixed": "3.0.0-alpha.0"
+      }
+     ]
+    ]
+   }
+  ],
+  "dompurify": [
+   {
+    "id": "GHSA-39q2-94rc-95cp",
+    "aliases": [
+     "CVE-2026-65903"
+    ],
+    "summary": "DOMPurify's ADD_TAGS function form bypasses FORBID_TAGS due to short-circuit evaluation",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-55q2-fjhq-7xh7",
+    "aliases": [
+     "CVE-2026-75838"
+    ],
+    "summary": "DOMPurify: IN_PLACE hook removal leaves a detached subtree executable, causing XSS",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.13"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-63q7-h895-m982",
+    "aliases": [
+     "CVE-2020-26870"
+    ],
+    "summary": "Cross-site Scripting in dompurify",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "2.0.17"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-6688-9rhm-gjv2",
+    "aliases": [
+     "CVE-2026-109345"
+    ],
+    "summary": "DOMPurify: IN_PLACE returns a force-removed rawtext root whose text carries attacker markup — pure HTML reparse executes",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.16"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-76mc-f452-cxcm",
+    "aliases": [
+     "CVE-2026-65902"
+    ],
+    "summary": "DOMPurify: Hook mutation of `data.allowedTags` / `data.allowedAttributes` permanently pollutes `DEFAULT_ALLOWED_TAGS` / `DEFAULT_ALLOWED_ATTR`",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.7"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-87xg-pxx2-7hvx",
+    "aliases": [
+     "CVE-2026-47423"
+    ],
+    "summary": "DOMPurify XSS via selectedcontent re-clone",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "3.4.4"
+      },
+      {
+       "fixed": "3.4.5"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-8hgg-xxm5-3873",
+    "aliases": [
+     "CVE-2019-25155"
+    ],
+    "summary": "DOMPurify Open Redirect vulnerability",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "1.0.11"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-c2j3-45gr-mqc4",
+    "aliases": [
+     "CVE-2026-66010"
+    ],
+    "summary": "DOMPurify: `CUSTOM_ELEMENT_HANDLING` bypasses `afterSanitizeElements` for allowed custom elements.",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.12"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-c6gr-qvv4-5v3f",
+    "aliases": [
+     "CVE-2026-116802"
+    ],
+    "summary": "DOMPurify: SMIL attributeName=href guard is skipped when PARSER_MEDIA_TYPE is application/xhtml+xml",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.17"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-cg2g-xh64-v4q7",
+    "aliases": [
+     "CVE-2026-116804"
+    ],
+    "summary": "DOMPurify SAFE_FOR_TEMPLATES bypass: split template expressions survive in attached shadow root content on DOM output modes",
+    "severity": "critical",
+    "ranges": [
+     [
+      {
+       "introduced": "3.4.4"
+      },
+      {
+       "fixed": "3.4.17"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-chqj-j4fh-rw7m",
+    "aliases": [
+     "CVE-2019-16728"
+    ],
+    "summary": "Cross-Site Scripting in dompurify",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "2.0.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-cj63-jhhr-wcxv",
+    "aliases": [
+     "CVE-2026-65913"
+    ],
+    "summary": "DOMPurify USE_PROFILES prototype pollution allows event handlers",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.3.2"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-cjmm-f4jc-qw8r",
+    "aliases": [
+     "CVE-2026-65912"
+    ],
+    "summary": "DOMPurify ADD_ATTR predicate skips URI validation",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.3.2"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-cmwh-pvxp-8882",
+    "aliases": [
+     "CVE-2026-65898"
+    ],
+    "summary": "DOMPurify: Permanent `ALLOWED_ATTR` pollution via `setConfig()` bypassing the hook clone-guard (incomplete fix of the 3.4.7 hook-pollution patch)",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.11"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-crv5-9vww-q3g8",
+    "aliases": [
+     "CVE-2026-41239"
+    ],
+    "summary": "DOMPurify has a SAFE_FOR_TEMPLATES bypass in RETURN_DOM mode",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "1.0.10"
+      },
+      {
+       "fixed": "3.4.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-gvmj-g25r-r7wr",
+    "aliases": [
+     "CVE-2026-65900"
+    ],
+    "summary": "DOMPurify: SAFE_FOR_TEMPLATES bypass - template expressions survive sanitization inside <template> content when using DOM output modes",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "3.0.0"
+      },
+      {
+       "fixed": "3.4.8"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-gx9m-whjm-85jf",
+    "aliases": [
+     "CVE-2024-47875"
+    ],
+    "summary": "DOMpurify has a nesting-based mXSS",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "2.5.0"
+      }
+     ],
+     [
+      {
+       "introduced": "3.0.0"
+      },
+      {
+       "fixed": "3.1.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-h7mw-gpvr-xq4m",
+    "aliases": [
+     "CVE-2026-41240"
+    ],
+    "summary": "DOMPurify: FORBID_TAGS bypassed by function-based ADD_TAGS predicate (asymmetry with FORBID_ATTR fix)",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-h8r8-wccr-v5f2",
+    "aliases": [
+     "CVE-2026-65914"
+    ],
+    "summary": "DOMPurify is vulnerable to mutation-XSS via Re-Contextualization",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.3.2"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-hpcv-96wg-7vj8",
+    "aliases": [
+     "CVE-2026-49458"
+    ],
+    "summary": "DOMPurify: Cross-realm IN_PLACE sanitization leaves executable markup intact via realm-bound `instanceof` checks",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.6"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-mjjq-c88q-qhr6",
+    "aliases": [],
+    "summary": "Cross-Site Scripting in dompurify",
+    "severity": "critical",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "2.0.7"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-mmhx-hmjr-r674",
+    "aliases": [
+     "CVE-2024-45801"
+    ],
+    "summary": "DOMPurify allows tampering by prototype pollution",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "2.5.4"
+      }
+     ],
+     [
+      {
+       "introduced": "3.0.0"
+      },
+      {
+       "fixed": "3.1.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-mrv2-3pqr-j5jr",
+    "aliases": [
+     "CVE-2026-116803"
+    ],
+    "summary": "DOMPurify IN_PLACE: hook that removes a parent or sibling leaves the detached subtree's event handlers armed (incomplete fix for GHSA-p98j-92pf-mc4p)",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.17"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-p3vf-v8qc-cwcr",
+    "aliases": [
+     "CVE-2024-48910"
+    ],
+    "summary": "DOMPurify vulnerable to tampering by prototype polution",
+    "severity": "critical",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "2.4.2"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-p98j-92pf-mc4p",
+    "aliases": [
+     "CVE-2026-109344"
+    ],
+    "summary": "DOMPurify: IN_PLACE: node-removing afterSanitize hook leaves detached subtree event handlers armed, causing DOM XSS",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "3.4.13"
+      },
+      {
+       "fixed": "3.4.16"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-r47g-fvhr-h676",
+    "aliases": [
+     "CVE-2026-49459"
+    ],
+    "summary": "DOMPurify: IN_PLACE mode preserves attributes of a clobbered root element, allowing XSS via attacker-controlled root DOM",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.6"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-rp9w-3fw7-7cwq",
+    "aliases": [
+     "CVE-2026-49978"
+    ],
+    "summary": "DOMPurify IN_PLACE Sanitization Bypass via Attached Shadow Root Inside <template>.content",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.7"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-v2wj-7wpq-c8vv",
+    "aliases": [
+     "CVE-2026-0540"
+    ],
+    "summary": "DOMPurify contains a Cross-site Scripting vulnerability",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "3.1.3"
+      },
+      {
+       "fixed": "3.3.2"
+      }
+     ],
+     [
+      {
+       "introduced": "2.5.3"
+      },
+      {
+       "fixed": "2.5.9"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-v8jm-5vwx-cfxm",
+    "aliases": [
+     "CVE-2025-15599"
+    ],
+    "summary": "DOMPurify contains a Cross-site Scripting vulnerability",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "3.1.3"
+      },
+      {
+       "fixed": "3.2.7"
+      }
+     ],
+     [
+      {
+       "introduced": "2.5.3"
+      },
+      {
+       "last_affected": "2.5.8"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-v9jr-rg53-9pgp",
+    "aliases": [
+     "CVE-2026-41238"
+    ],
+    "summary": "DOMPurify: Prototype Pollution to XSS Bypass via CUSTOM_ELEMENT_HANDLING Fallback",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "3.0.1"
+      },
+      {
+       "fixed": "3.4.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-vhxf-7vqr-mrjg",
+    "aliases": [
+     "CVE-2025-26791"
+    ],
+    "summary": "DOMPurify allows Cross-site Scripting (XSS)",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.2.4"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-vxr8-fq34-vvx9",
+    "aliases": [
+     "CVE-2026-65899"
+    ],
+    "summary": "DOMPurify: Trusted Types policy survives `clearConfig()` and can poison later `RETURN_TRUSTED_TYPE` output",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.4.9"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-x4vx-rjvf-j5p4",
+    "aliases": [
+     "CVE-2026-65901"
+    ],
+    "summary": "DOMPurify: `IN_PLACE` mode trusts attacker-controlled `nodeName` on live non-form nodes, allowing script retention and XSS via attacker-supplied DOM objects",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "last_affected": "3.4.6"
+      }
+     ]
+    ]
+   }
+  ],
+  "tinymce": [
+   {
+    "id": "GHSA-27gm-ghr9-4v95",
+    "aliases": [
+     "CVE-2020-17480"
+    ],
+    "summary": "Cross-site scripting vulnerability in TinyMCE",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.9.7"
+      }
+     ],
+     [
+      {
+       "introduced": "5.0.0"
+      },
+      {
+       "fixed": "5.1.4"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-438c-3975-5x3f",
+    "aliases": [
+     "CVE-2024-29203"
+    ],
+    "summary": "TinyMCE Cross-Site Scripting (XSS) vulnerability in handling iframes",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "6.8.1"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-5359-pvf2-pw78",
+    "aliases": [
+     "CVE-2024-29881"
+    ],
+    "summary": "TinyMCE Cross-Site Scripting (XSS) vulnerability in handling external SVG files through Object or Embed elements",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "7.0.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-5h9g-x5rv-25wg",
+    "aliases": [
+     "CVE-2024-21908"
+    ],
+    "summary": "Cross-site scripting vulnerability in TinyMCE",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.9.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-5vm8-hhgr-jcjp",
+    "aliases": [],
+    "summary": "Cross-site scripting vulnerability in TinyMCE",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.7.1"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-9hcv-j9pv-qmph",
+    "aliases": [
+     "CVE-2024-38356"
+    ],
+    "summary": "TinyMCE Cross-Site Scripting (XSS) vulnerability using noneditable_regexp option",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.11.0"
+      }
+     ],
+     [
+      {
+       "introduced": "6.0.0"
+      },
+      {
+       "fixed": "6.8.4"
+      }
+     ],
+     [
+      {
+       "introduced": "7.0.0"
+      },
+      {
+       "fixed": "7.2.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-c78w-2gw7-gjv3",
+    "aliases": [
+     "CVE-2019-1010091"
+    ],
+    "summary": "XSS in TinyMCE",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.9.10"
+      }
+     ],
+     [
+      {
+       "introduced": "5.0.0"
+      },
+      {
+       "fixed": "5.2.2"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-gg8r-xjwq-4w92",
+    "aliases": [
+     "CVE-2022-23494"
+    ],
+    "summary": "Cross-site scripting vulnerability in TinyMCE alerts",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "6.0.0"
+      },
+      {
+       "fixed": "6.3.1"
+      }
+     ],
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.10.7"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-h96f-fc7c-9r55",
+    "aliases": [],
+    "summary": "Regex denial of service vulnerability in codesample plugin",
+    "severity": "low",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.6.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-hgqx-r2hp-jr38",
+    "aliases": [
+     "CVE-2023-45819"
+    ],
+    "summary": "TinyMCE XSS vulnerability in notificationManager.open API",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "6.0.0"
+      },
+      {
+       "fixed": "6.7.1"
+      }
+     ],
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.10.8"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-mf2p-h6hf-fcwm",
+    "aliases": [
+     "CVE-2026-116675"
+    ],
+    "summary": "TinyMCE Cross-Site Scripting (XSS) vulnerability using media plugin `data-mce-object` serialization",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "8.5.1"
+      },
+      {
+       "fixed": "8.9.3"
+      }
+     ],
+     [
+      {
+       "introduced": "7.9.3"
+      },
+      {
+       "fixed": "7.9.4"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-mh5m-5hw4-5c69",
+    "aliases": [
+     "CVE-2026-47760"
+    ],
+    "summary": "TinyMCE Cross-Site Scripting (XSS) vulnerability using sanitization bypass through nested SVGs",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "6.8.0"
+      },
+      {
+       "fixed": "7.1.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-q742-qvgc-gc2f",
+    "aliases": [
+     "CVE-2026-47759"
+    ],
+    "summary": "TinyMCE Cross-Site Scripting (XSS) vulnerability using through data-mce- prefixed src, href, style attributes",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "last_affected": "5.10.9"
+      }
+     ],
+     [
+      {
+       "introduced": "6.0.0"
+      },
+      {
+       "fixed": "7.9.3"
+      }
+     ],
+     [
+      {
+       "introduced": "8.0.0"
+      },
+      {
+       "fixed": "8.5.1"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-r8hm-w5f7-wj39",
+    "aliases": [
+     "CVE-2024-21910"
+    ],
+    "summary": "Cross-site scripting vulnerability in TinyMCE plugins",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.10.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-v626-r774-j7f8",
+    "aliases": [
+     "CVE-2023-48219"
+    ],
+    "summary": "TinyMCE vulnerable to mutation Cross-site Scripting via special characters in unescaped text nodes",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.10.9"
+      }
+     ],
+     [
+      {
+       "introduced": "6.0.0"
+      },
+      {
+       "fixed": "6.7.3"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-v65r-p3vv-jjfv",
+    "aliases": [
+     "CVE-2023-45818"
+    ],
+    "summary": "TinyMCE mXSS vulnerability in undo/redo, getContent API, resetContent API, and Autosave plugin",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "6.0.0"
+      },
+      {
+       "fixed": "6.7.1"
+      }
+     ],
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.10.8"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-v98h-vmpc-fpqv",
+    "aliases": [
+     "CVE-2026-47762"
+    ],
+    "summary": "TinyMCE Cross-Site Scripting (XSS) vulnerability through `mce:protected` comments",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "last_affected": "5.10.9"
+      }
+     ],
+     [
+      {
+       "introduced": "6.0.0"
+      },
+      {
+       "fixed": "7.9.3"
+      }
+     ],
+     [
+      {
+       "introduced": "8.0.0"
+      },
+      {
+       "fixed": "8.5.1"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-vg35-5wq7-3x7w",
+    "aliases": [
+     "CVE-2026-47761"
+    ],
+    "summary": "TinyMCE Cross-Site Scripting (XSS) vulnerability using media plugin `data-mce-object` injection",
+    "severity": "high",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "last_affected": "5.10.9"
+      }
+     ],
+     [
+      {
+       "introduced": "6.0.0"
+      },
+      {
+       "fixed": "7.9.3"
+      }
+     ],
+     [
+      {
+       "introduced": "8.0.0"
+      },
+      {
+       "fixed": "8.5.1"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-vrv8-v4w8-f95h",
+    "aliases": [
+     "CVE-2020-12648"
+    ],
+    "summary": "Cross-site scripting vulnerability in TinyMCE",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "4.9.11"
+      }
+     ],
+     [
+      {
+       "introduced": "5.0.0"
+      },
+      {
+       "fixed": "5.4.1"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-w7jx-j77m-wp65",
+    "aliases": [
+     "CVE-2024-21911"
+    ],
+    "summary": "Cross-site scripting vulnerability in TinyMCE",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.6.0"
+      }
+     ]
+    ]
+   },
+   {
+    "id": "GHSA-w9jx-4g6g-rp7x",
+    "aliases": [
+     "CVE-2024-38357"
+    ],
+    "summary": "TinyMCE Cross-Site Scripting (XSS) vulnerability using noscript elements",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "5.11.0"
+      }
+     ],
+     [
+      {
+       "introduced": "6.0.0"
+      },
+      {
+       "fixed": "6.8.4"
+      }
+     ],
+     [
+      {
+       "introduced": "7.0.0"
+      },
+      {
+       "fixed": "7.2.0"
+      }
+     ]
+    ]
+   }
+  ],
+  "knockout": [
+   {
+    "id": "GHSA-vcjj-xf2r-mwvc",
+    "aliases": [
+     "CVE-2019-14862"
+    ],
+    "summary": "XSS in knockout",
+    "severity": "medium",
+    "ranges": [
+     [
+      {
+       "introduced": "0"
+      },
+      {
+       "fixed": "3.5.0"
+      }
+     ]
+    ]
+   }
+  ]
+ }
+}

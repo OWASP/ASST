@@ -1,0 +1,27 @@
+{
+  "description": "Ground truth for DVWA (pinned commit in bench/datasets.json). Levels low/medium/high are vulnerable by design; 'impossible' is the secure reference implementation. Only modules whose weakness is decidable from PHP source are included. DOM XSS (JavaScript), stored XSS (second-order through the database), CSRF/brute-force/CAPTCHA/weak session id/CSP/upload logic modules are out of scope for this benchmark.",
+  "cases": [
+    { "file": "vulnerabilities/sqli/source/low.php", "cwe": "CWE-89", "vulnerable": true },
+    { "file": "vulnerabilities/sqli/source/medium.php", "cwe": "CWE-89", "vulnerable": true },
+    { "file": "vulnerabilities/sqli/source/high.php", "cwe": "CWE-89", "vulnerable": true, "note": "input arrives through $_SESSION (second-order source)" },
+    { "file": "vulnerabilities/sqli/source/impossible.php", "cwe": "CWE-89", "vulnerable": false },
+
+    { "file": "vulnerabilities/sqli_blind/source/low.php", "cwe": "CWE-89", "vulnerable": true },
+    { "file": "vulnerabilities/sqli_blind/source/medium.php", "cwe": "CWE-89", "vulnerable": true },
+    { "file": "vulnerabilities/sqli_blind/source/high.php", "cwe": "CWE-89", "vulnerable": true },
+    { "file": "vulnerabilities/sqli_blind/source/impossible.php", "cwe": "CWE-89", "vulnerable": false },
+
+    { "file": "vulnerabilities/exec/source/low.php", "cwe": "CWE-78", "vulnerable": true },
+    { "file": "vulnerabilities/exec/source/medium.php", "cwe": "CWE-78", "vulnerable": true },
+    { "file": "vulnerabilities/exec/source/high.php", "cwe": "CWE-78", "vulnerable": true },
+    { "file": "vulnerabilities/exec/source/impossible.php", "cwe": "CWE-78", "vulnerable": false },
+
+    { "file": "vulnerabilities/open_redirect/source/low.php", "cwe": "CWE-601", "vulnerable": true },
+    { "file": "vulnerabilities/open_redirect/source/medium.php", "cwe": "CWE-601", "vulnerable": true },
+    { "file": "vulnerabilities/open_redirect/source/high.php", "cwe": "CWE-601", "vulnerable": true },
+    { "file": "vulnerabilities/open_redirect/source/impossible.php", "cwe": "CWE-601", "vulnerable": false },
+
+    { "file": "vulnerabilities/fi", "scope": "dir", "cwe": "CWE-98", "vulnerable": true, "note": "source sets $file, sink include($file) is in the module's index.php" },
+    { "file": "vulnerabilities/xss_r", "scope": "dir", "cwe": "CWE-79", "vulnerable": true, "note": "output happens through the shared page renderer (cross-file)" }
+  ]
+}

@@ -1,32 +1,32 @@
 #!/usr/bin/env node
-const timestampBeforeScanStarted = Date.now() / 1000 | 0;
-process.stdout.write('\033c'); // Clear screen
+/*
+ * OWASP ASST - Automated Software Security Toolkit
+ *
+ *   node main.js            scan the project configured in config.js
+ *   node main.js --help     command-line options
+ *
+ * This file intentionally uses syntax that every Node.js version can parse, so that an
+ * outdated Node.js prints a clear message instead of a syntax error.
+ */
+'use strict';
 
-// Imports
-const config = require("./config.js");
-var start = "";
+var MIN_NODE_MAJOR = 18;
+var major = Number(process.versions.node.split('.')[0]);
 
-// Global Variables
-// none for now
-
-// Main
-if(config.USED_PROGRAMMING_LANGUAGE.toLowerCase() == "php"){
-	start = require("./langs/php");
-}
-else if(config.USED_PROGRAMMING_LANGUAGE.toLowerCase() == "c#"){
-	//start = require("./langs/c#");
-}
-else {
-	console.log();
-	console.log("Invalid chosen programming language, exiting..");
-	process.exit();
-}
-
-if(start != ""){
-	new start();
-
-	const totalScanTime = (Date.now() / 1000 | 0) - timestampBeforeScanStarted;
-	console.log("Total scan time: " + totalScanTime + " Seconds");
-	console.log();
+if (major < MIN_NODE_MAJOR) {
+	console.error('');
+	console.error('ASST 2 requires Node.js ' + MIN_NODE_MAJOR + ' or newer, but this is Node.js ' + process.versions.node + '.');
+	console.error('Install the current LTS version from https://nodejs.org/en/download (or run: sudo n lts).');
+	console.error('The release shown in the installation videos (ASST v1.0.0, Node.js 12) is still available');
+	console.error('as tag v1.0.0: https://github.com/OWASP/ASST/releases/tag/v1.0.0');
+	console.error('');
+	process.exit(1);
 }
 
+require('./core/runner').run(process.argv.slice(2)).then(function (code) {
+	process.exitCode = code;
+}, function (err) {
+	console.error('ASST stopped because of an unexpected error:');
+	console.error(err && err.stack ? err.stack : err);
+	process.exitCode = 2;
+});

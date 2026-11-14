@@ -1,0 +1,19 @@
+# Only what the image needs: main.js, config files, core/, langs/, data/ and the npm manifests.
+.git
+.github
+node_modules
+bench
+test
+assets
+scripts
+*.md
+!langs/**/*.md
+!LICENSE.md
+!THIRD_PARTY_NOTICES.md
+report.*
+asst-out
+asst-results
+.asst-cache
+langs/**/docs/*.docx
+Dockerfile
+.dockerignore

@@ -1,10 +1,35 @@
 {
   "name": "asst",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "OWASP ASST (Automated Software Security Toolkit) | A Novel Open Source Web Security Scanner.",
   "main": "main.js",
+  "bin": {
+    "asst": "main.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "main.js",
+    "config.js",
+    "config_php_lang.js",
+    "core/",
+    "langs/",
+    "data/",
+    "action.yml",
+    "ASST.bat",
+    "ASST.sh",
+    "README.md",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "LICENSE.md",
+    "THIRD_PARTY_NOTICES.md"
+  ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node scripts/run-tests.js",
+    "bench": "node bench/run.js --write-results",
+    "bench:ci": "node bench/run.js --datasets fixtures,fixtures-app,dvwa,sard --sard-sample 2000 --versions head --check-baseline bench/baseline-metrics.json",
+    "update-data": "node scripts/update-data.js"
   },
   "repository": {
     "type": "git",
@@ -25,7 +50,13 @@
     "security-assessments",
     "web-vulnerability-scanners",
     "asst",
-    "security-assesment-security-tools"
+    "security-assesment-security-tools",
+    "php",
+    "nodejs",
+    "express",
+    "sast",
+    "sarif",
+    "static-analysis"
   ],
   "author": "Tarik Seyceri",
   "license": "MIT",
@@ -34,7 +65,17 @@
   },
   "homepage": "https://github.com/OWASP/ASST#readme",
   "dependencies": {
-    "colors": "^1.4.0",
-    "sync-mysql": "^3.0.1"
+    "@babel/parser": "7.29.11",
+    "marked": "15.0.12",
+    "mysql2": "3.24.6",
+    "php-parser": "3.7.0"
+  },
+  "devDependencies": {
+    "ajv": "8.20.0"
+  },
+  "overrides": {
+    "@babel/types": "7.29.11",
+    "@babel/helper-string-parser": "7.29.11",
+    "@babel/helper-validator-identifier": "7.29.7"
   }
 }

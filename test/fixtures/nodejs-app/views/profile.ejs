@@ -1,0 +1,5 @@
+<h1><%= user.name %></h1>
+<section class="bio"><%- user.bio %></section> <%# @expect CWE-79 %>
+<ul>
+  <% orders.forEach(function (o) { %><li><%= o.title %></li><% }) %>
+</ul>

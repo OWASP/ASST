@@ -1,9 +1,19 @@
-# ASST #BETA
+# ASST
 OWASP ASST (Automated Software Security Toolkit) | A Novel Open Source Web Security Scanner.
 
 Note: AWSS is the older name of ASST
 
 ![alt Preview](https://github.com/OWASP/ASST/blob/main/assets/images/asst.jpg?raw=true)
+
+[![CI](https://github.com/OWASP/ASST/actions/workflows/ci.yml/badge.svg)](https://github.com/OWASP/ASST/actions/workflows/ci.yml)
+[![Latest version](https://img.shields.io/github/v/tag/OWASP/ASST?label=version&sort=semver)](https://github.com/OWASP/ASST/tags)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
+[![Node.js 18+](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org/)
+[![OWASP Top 10:2025](https://img.shields.io/badge/OWASP-Top%2010%3A2025-blue.svg)](https://owasp.org/Top10/2025/)
+[![Scans: PHP | Node.js](https://img.shields.io/badge/scans-PHP%20%7C%20Node.js-informational.svg)](#whats-new-in-asst-v2)
+[![Platforms: Windows | Linux | macOS](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](#how-to-install-and-run-it)
+[![GitHub stars](https://img.shields.io/github/stars/OWASP/ASST?style=flat)](https://github.com/OWASP/ASST/stargazers)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?logo=buymeacoffee&logoColor=black)](https://www.buymeacoffee.com/tarikseyceri)
 
 # Introduction
 Web applications have become an integral part of everyday life, but many of these applications are deployed with critical vulnerabilities that can be fatally exploited. As the technology used to develop these applications become sophisticated, so do the attackers’ techniques. Attackers no longer need physical access to the victims, they can attack more than one at the same time and the possibility of being caught and brought to justice is minimal.
@@ -24,6 +34,24 @@ When ASST scans for a project it checks each and every file line by line for sec
 
 ASST's results are showed as HTML Report linked with PDF files to explain each attack and its protection mechanism.
 
+# What's new in ASST v2
+
+ASST v2 is a major upgrade built on the foundation of v1.0.0, the original thesis release that introduced the educational report approach. Highlights:
+
+- **Data-flow analysis:** PHP and Node.js code is parsed, and user input is followed from request sources through variables, functions, classes and files to dangerous functions. Escaping and validation are understood for the place a value ends up in (SQL, HTML, shell, file paths, URLs). Every finding shows the path the data takes.
+- **OWASP Top 10:2025:** every finding carries the 2025 category (with the 2021 one), its CWE, a severity and a confidence level. The remediation guides are refreshed for PHP 8 and current Node.js practice.
+- **Reports for people and pipelines:** an interactive HTML report, plus JSON, SARIF (GitHub code scanning) and Markdown output, baselines and CI exit codes.
+- **Frameworks and languages:** Laravel, WordPress and Symfony support, and a Node.js/Express scanner.
+- **Software supply chain:**
+  - dependencies from lock files and JavaScript libraries copied into the project;
+  - end-of-life runtimes and frameworks;
+  - optional OSV.dev lookups;
+  - secrets detection with masked output.
+- **Running systems:** opt-in, read-only live checks of the running site and a php.ini audit.
+- **Tooling:** a GitHub Action, a Docker image and a benchmark harness (DVWA, NIST SARD, WordPress).
+
+The installation steps below stay the same; ASST v2 needs Node.js 18 or newer. Configuration files from v1.0 keep working. See [CHANGELOG.md](CHANGELOG.md) for the complete list and [CONTRIBUTING.md](CONTRIBUTING.md) to add rules or languages.
+
 # How to Contribute?
 - ASST can be easily extended to support other programming languages that may be scanned for vulnerabilities. The project is open source therefore, programmers with expertise in cyber security can contribute or fork the toolkit and add features. Other programming languages such as Python, C#, Java or Node.js itself can be added to be scanned for vulnerabilities as backend server code.
 
@@ -36,7 +64,7 @@ But there are rules needs to be followed while improving it:
 # How to install and run it?
 To let ASST work 100%, you will need to install:
 1. localhost on your PC, we recommend (XAMPP).
-2. Node.js Engine v12.13.0
+2. Node.js Engine v18 or newer (the current LTS version is recommended)
 
 - The best usage of ASST is to run it directly on Online Production Server, and scan the project(s) in it. because ASST also checks Server's PHP and MySQL Versions if they are outdated or not.
 
@@ -61,11 +89,11 @@ Open browser, type: localhost/phpmyadmin, create empty database, import your pro
 
 ## 2. Node.js on Windows
 
-You must download a specific version of Node.js for windows from here: https://nodejs.org/en/blog/release/v12.13.0/ select (Windows 64-bit Installer), then download, Next, Next, Next and Finish.
+Download the current LTS version of Node.js (v18 or newer) for Windows from here: https://nodejs.org/en/download select (Windows Installer (.msi)), then download, Next, Next, Next and Finish.
 
-We are not keeping up with nodejs upgrades every month, so if you would like to test it on your own, you can download latest node.js version from here: https://nodejs.org/en/download/ choose (Windows Installer (.msi)), download and run it, Next, Next, Next and Finish.
+ASST is tested with Node.js 18, 20, 22 and 24 on Windows, Linux and macOS, so any of these versions works.
 
-###### PS: Downloading latest Node.js Engine may require you to update ASST's modules, so if you know what you are doing and you have time, and want to contribute, you can report your latest version of node.js and update modules and ask us to commit it on the repo if it works.
+###### PS: The installation videos show ASST v1.0.0 with Node.js v12.13.0. That release remains available as tag [v1.0.0](https://github.com/OWASP/ASST/releases/tag/v1.0.0); ASST v2 requires Node.js 18 or newer.
 
 ## 3. Run ASST on Windows
 
@@ -121,15 +149,15 @@ Open browser, type: localhost/phpmyadmin, create empty database, import your pro
 
 > $ sudo apt-get install npm -y
 
-You must set a specific version of Node.js to let ASST works without any problem.
+Make sure Node.js 18 or newer is active (check with: node -v). The "n" version manager installs the current LTS version:
 
 > $ sudo npm install n -g
 
-> $ sudo n 12.13.0
+> $ sudo n lts
 
-We are not keeping up with nodejs upgrades every month, so if you would like to test it on your own, you can ignore the last two commands of installing "n" using npm
+If node -v already shows v18 or newer, you can skip the last two commands.
 
-###### PS: Using latest Node.js Engine may require you to update ASST's modules, so if you know what you are doing and you have time, and want to contribute, you can report your latest version of node.js and update modules and ask us to commit it on the repo if it works.
+###### PS: The installation videos show ASST v1.0.0 with Node.js v12.13.0. That release remains available as tag [v1.0.0](https://github.com/OWASP/ASST/releases/tag/v1.0.0); ASST v2 requires Node.js 18 or newer.
 
 ## 3. Run ASST on Ubuntu
 
@@ -177,15 +205,15 @@ We used: brew (package system), Open Terminal:
 
 > $ sudo brew install node
 
-You must set a specific version of Node.js to let ASST works without any problem.
+Make sure Node.js 18 or newer is active (check with: node -v). The "n" version manager installs the current LTS version:
 
 > $ sudo npm install n -g
 
-> $ sudo n 12.13.0
+> $ sudo n lts
 
-We are not keeping up with nodejs upgrades every month, so if you would like to test it on your own, you can ignore the last two commands of installing "n" using npm
+If node -v already shows v18 or newer, you can skip the last two commands.
 
-###### PS: Using the latest Node.js Engine may require you to update ASST's modules, so if you know what you are doing and you have time, and want to contribute, you can report your latest version of node.js and update modules and ask us to commit it on the repo if it works.
+###### PS: The installation videos show ASST v1.0.0 with Node.js v12.13.0. That release remains available as tag [v1.0.0](https://github.com/OWASP/ASST/releases/tag/v1.0.0); ASST v2 requires Node.js 18 or newer.
 
 ## 3. Run ASST on MacOSX
 
@@ -207,6 +235,156 @@ To run ASST, default command:
 
 > $ sudo node /Applications/XAMPP/htdocs/ASST/main.js
 
+# Using ASST v2
+
+Running `node main.js` (or `ASST.bat` / `ASST.sh`) works exactly as shown in the videos: ASST scans the folder set in `config.js` and writes `report.html` next to `main.js`. Everything below is optional.
+
+## Command-line options
+
+| Option | Purpose |
+|---|---|
+| `--path <folder>` | Folder to scan (instead of `DEFAULT_PROJECT_PATH_TO_SCAN`) |
+| `--lang php\|nodejs\|auto` | Scanner to use (default: `USED_PROGRAMMING_LANGUAGE`, which is `php`) |
+| `--format html,json,sarif,md` | Report formats to write |
+| `--out <folder or file.html>` | Where the reports are written |
+| `--min-severity <level>`, `--min-confidence <level>` | Reporting thresholds (default confidence: medium) |
+| `--fail-on <severity>` | Exit with code 1 when a finding reaches this severity (for CI) |
+| `--exclude <glob>`, `--include-vendor` | Skip paths, or also scan `vendor/` and `node_modules/` |
+| `--rules <prefixes>`, `--disable-rules <prefixes>` | Run only some rules, or skip some (for example `PHP-XSS`) |
+| `--baseline <file>`, `--update-baseline <file>` | Compare with an earlier scan, or record the current findings |
+| `--second-order` | Also treat stored data (database rows, session, files) as untrusted |
+| `--online` | Check dependencies on OSV.dev and refresh lifecycle dates (see the privacy note below) |
+| `--url <url>`, `--allow-remote` | Opt-in live checks of the running site |
+| `--no-db`, `--php-bin <path>` | Skip the database checks, or choose the PHP binary for the runtime checks |
+| `--quiet`, `--no-color`, `--version`, `--help` | Output control |
+
+Run `node main.js --help` for the complete list. Most options can also be set in `config.js` or with `ASST_*` environment variables.
+
+Exit codes:
+- `0`: the scan completed;
+- `1`: there are findings at or above `--fail-on`;
+- `2`: the scan could not run.
+
+## Reports
+
+- `report.html`: an interactive report that works offline: search, filters, grouping, code snippets, data-flow traces, the matching remediation guide section, dark mode and print layout. The PDF guides are linked as before.
+- `report.json`: machine-readable results (schema `asst-report/1`).
+- `report.sarif`: SARIF 2.1.0 for GitHub code scanning and IDE viewers.
+- `report.md`: a Markdown summary for pull requests and CI job summaries.
+
+## Continuous integration and the GitHub Action
+
+```yaml
+name: ASST
+on: [push, pull_request]
+permissions:
+  contents: read
+  security-events: write
+jobs:
+  asst:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: OWASP/ASST@v2.0.0
+        with:
+          path: .
+          language: auto
+          fail-on: high
+```
+
+The action installs ASST, scans the repository, uploads the SARIF report to code scanning and adds the Markdown summary to the job page. Inputs: `path`, `language`, `fail-on` (or `none`), `min-confidence`, `formats`, `output`, `upload-sarif`, `online` and `extra-args`. In other CI systems, run `npm ci` in the ASST folder and then `node main.js --path <project> --format sarif,md --fail-on high`.
+
+## Node.js projects
+
+Set `USED_PROGRAMMING_LANGUAGE: "nodejs"` in `config.js`, or run `node main.js --lang nodejs --path ../my-express-app`. ASST checks:
+- the JavaScript and TypeScript code of Express-style applications;
+- templates: EJS, Handlebars, Pug, Nunjucks and Vue;
+- dependencies and configuration.
+
+`--lang auto` chooses the scanner from the project's files.
+
+## Live checks (authorized use only)
+
+`node main.js --url http://localhost/YourProject/` also checks the running site:
+- security headers, cookies, version banners, the HTTPS redirect and CORS;
+- PHP error output and directory listings;
+- whether backups, database dumps, `.env` files or `.git` data found in the code can actually be downloaded.
+
+The checks are read-only. They send GET and HEAD requests only (at most 60, five per second) and never submit forms. They contact only localhost and private networks unless `--allow-remote` is given. Only scan sites you own or are explicitly authorized to test.
+
+## Dependencies, secrets and privacy
+
+ASST lists the packages from `composer.lock`, `package-lock.json` and `yarn.lock`, and recognizes JavaScript libraries copied into the project. Advisories for common front-end libraries and the end-of-life dates ship with ASST, so no network access is needed.
+
+With `--online` (or `ONLINE_CHECKS: true`), ASST also:
+- asks [OSV.dev](https://osv.dev) about every package;
+- refreshes lifecycle dates from [endoflife.date](https://endoflife.date).
+
+Only package names, versions and product names are sent, and the answers are cached in `.asst-cache/` for a day.
+
+Secrets (API keys, tokens, private keys, passwords) are reported with masked values. The secret itself never appears in a report.
+
+## Docker
+
+```bash
+docker build -t asst .
+docker run --rm -v "$PWD:/src:ro" -v "$PWD/asst-out:/out" asst
+docker run --rm -v "$PWD:/src:ro" -v "$PWD/asst-out:/out" asst --lang nodejs --format html,sarif --fail-on high
+```
+
+The container scans `/src`, writes the reports to `/out` and runs as an unprivileged user. Database and PHP runtime checks are switched off inside the container. The PDF guide links in the HTML report point to the container's copy; the Markdown guide sections are embedded in the report itself.
+
+## Suppressing findings
+
+- **Inline:** add `asst-ignore[RULE-ID] reason` in a comment on the reported line or on the line above it.
+- **Paths:** list globs in `.asstignore` or `EXCLUDE_PATHS`, or use `--exclude`.
+- **Baselines:** `--update-baseline asst-baseline.json` records the current findings. Later scans with `--baseline asst-baseline.json` mark findings as new or unchanged and list the fixed ones.
+
+## Good to know
+
+- On Windows, the first scan of a large project can take noticeably longer than later ones, while the antivirus checks each file for the first time.
+- The PHP runtime checks use the PHP binary set in `config_php_lang.js` (XAMPP by default). The web server can load a different `php.ini`, so the report says which file was checked.
+- Benchmark results for DVWA, the NIST SARD PHP suite and WordPress are in [bench/RESULTS.md](bench/RESULTS.md).
+
+## Limitations
+
+Static analysis cannot prove that code is free of vulnerabilities. ASST follows data through the code it can see, so some cases can be missed:
+- values passed through variable variables, magic methods, reflection, generated code or external services;
+- access-control and business-logic flaws, which need manual review (the report lists what to check).
+
+Some findings may need a second look, which is why each one has a confidence level. Templates are checked for unescaped output rather than fully parsed. The Node.js scanner covers Express-style frameworks; Koa, NestJS decorators and Next.js API routes are not modeled yet.
+
+# Security
+
+ASST only reads the project it scans and never changes it.
+
+- It contacts the network only with `--online` (package names and versions to OSV.dev) or `--url` (read-only requests to your own site).
+- It reads password hashes only by length and prefix, never the hashes themselves.
+- It masks secrets in every report.
+
+Please report vulnerabilities in ASST itself privately; see [SECURITY.md](SECURITY.md).
+
+# Development
+
+```bash
+npm ci && npm test      # unit, fixture and installation-layout tests
+npm run bench           # precision/recall on DVWA, NIST SARD and the fixtures
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the project layout, how to write rules and how to add a language.
+
+# Documentation
+
+| | |
+|---|---|
+| [Changelog](CHANGELOG.md) | What's new in each version |
+| [PHP guides](langs/php/guides) and [PDF guides](langs/php/docs) | Remediation guides shown in the reports |
+| [Node.js guides](langs/nodejs/guides) | Remediation guides for Node.js projects |
+| [Benchmark results](bench/RESULTS.md) | v1.0 and v2 compared on DVWA, NIST SARD and WordPress |
+| [Contributing](CONTRIBUTING.md) | Layout, rule authoring, adding a language |
+| [Security policy](SECURITY.md) | Reporting vulnerabilities, what ASST does on your machine |
+| [Third-party notices](THIRD_PARTY_NOTICES.md) | Licenses of dependencies and bundled data |
+
 # Special Thanks
 
 Special Thanks to:
@@ -217,3 +395,7 @@ Special Thanks to:
 4. OWASP Foundation
 
 For making this toolkit possible by providing their guidance and help.
+
+# License
+
+MIT, see [LICENSE.md](LICENSE.md). The npm packages ASST uses and the advisory and lifecycle data it ships with have their own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

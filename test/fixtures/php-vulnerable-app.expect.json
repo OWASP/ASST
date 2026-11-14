@@ -1,0 +1,26 @@
+{
+  "description": "Project-level and file-level expectations for php-vulnerable-app (line-level expectations are inline @expect annotations).",
+  "files": {
+    "backup.sql": [
+      "CWE-538"
+    ],
+    ".env": [
+      "CWE-538",
+      "CWE-798"
+    ],
+    "composer.json": [
+      "CWE-538"
+    ],
+    "composer.lock": [
+      "CWE-538"
+    ],
+    "assets/js/jquery-1.12.4.min.js": [
+      "CWE-1395",
+      "CWE-1104"
+    ]
+  },
+  "project": [
+    "CWE-548",
+    "CWE-319"
+  ]
+}

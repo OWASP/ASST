@@ -1,0 +1,8 @@
+{
+  "description": "File-level expectations for nodejs-app (line-level expectations are inline @expect annotations). The tests copy the app to a temporary folder and rename *.fixture files (package.json, package-lock.json) first, so the repository itself does not contain an outdated lock file.",
+  "files": {
+    ".nvmrc": ["CWE-1104"],
+    "package-lock.json": ["CWE-1395"]
+  },
+  "project": []
+}

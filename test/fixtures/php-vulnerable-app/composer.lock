@@ -1,0 +1,17 @@
+{
+    "_readme": ["This file locks the dependencies of your project to a known state"],
+    "content-hash": "0000000000000000000000000000000",
+    "packages": [
+        {
+            "name": "guzzlehttp/guzzle",
+            "version": "6.5.2",
+            "type": "library"
+        },
+        {
+            "name": "guzzlehttp/psr7",
+            "version": "1.6.1",
+            "type": "library"
+        }
+    ],
+    "packages-dev": []
+}
