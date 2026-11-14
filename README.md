@@ -1,9 +1,19 @@
-# ASST #BETA
+# ASST
 OWASP ASST (Automated Software Security Toolkit) | A Novel Open Source Web Security Scanner.
 
 Note: AWSS is the older name of ASST
 
 ![alt Preview](https://github.com/OWASP/ASST/blob/main/assets/images/asst.jpg?raw=true)
+
+[![CI](https://github.com/OWASP/ASST/actions/workflows/ci.yml/badge.svg)](https://github.com/OWASP/ASST/actions/workflows/ci.yml)
+[![Latest version](https://img.shields.io/github/v/tag/OWASP/ASST?label=version&sort=semver)](https://github.com/OWASP/ASST/tags)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
+[![Node.js 18+](https://img.shields.io/badge/node-%3E%3D18-brightgreen.svg)](https://nodejs.org/)
+[![OWASP Top 10:2025](https://img.shields.io/badge/OWASP-Top%2010%3A2025-blue.svg)](https://owasp.org/Top10/2025/)
+[![Scans: PHP | Node.js](https://img.shields.io/badge/scans-PHP%20%7C%20Node.js-informational.svg)](#whats-new-in-asst-v2)
+[![Platforms: Windows | Linux | macOS](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey.svg)](#how-to-install-and-run-it)
+[![GitHub stars](https://img.shields.io/github/stars/OWASP/ASST?style=flat)](https://github.com/OWASP/ASST/stargazers)
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?logo=buymeacoffee&logoColor=black)](https://www.buymeacoffee.com/tarikseyceri)
 
 # Introduction
 Web applications have become an integral part of everyday life, but many of these applications are deployed with critical vulnerabilities that can be fatally exploited. As the technology used to develop these applications become sophisticated, so do the attackers’ techniques. Attackers no longer need physical access to the victims, they can attack more than one at the same time and the possibility of being caught and brought to justice is minimal.
@@ -344,6 +354,37 @@ Static analysis cannot prove that code is free of vulnerabilities. ASST follows 
 
 Some findings may need a second look, which is why each one has a confidence level. Templates are checked for unescaped output rather than fully parsed. The Node.js scanner covers Express-style frameworks; Koa, NestJS decorators and Next.js API routes are not modeled yet.
 
+# Security
+
+ASST only reads the project it scans and never changes it.
+
+- It contacts the network only with `--online` (package names and versions to OSV.dev) or `--url` (read-only requests to your own site).
+- It reads password hashes only by length and prefix, never the hashes themselves.
+- It masks secrets in every report.
+
+Please report vulnerabilities in ASST itself privately; see [SECURITY.md](SECURITY.md).
+
+# Development
+
+```bash
+npm ci && npm test      # unit, fixture and installation-layout tests
+npm run bench           # precision/recall on DVWA, NIST SARD and the fixtures
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the project layout, how to write rules and how to add a language.
+
+# Documentation
+
+| | |
+|---|---|
+| [Changelog](CHANGELOG.md) | What's new in each version |
+| [PHP guides](langs/php/guides) and [PDF guides](langs/php/docs) | Remediation guides shown in the reports |
+| [Node.js guides](langs/nodejs/guides) | Remediation guides for Node.js projects |
+| [Benchmark results](bench/RESULTS.md) | v1.0 and v2 compared on DVWA, NIST SARD and WordPress |
+| [Contributing](CONTRIBUTING.md) | Layout, rule authoring, adding a language |
+| [Security policy](SECURITY.md) | Reporting vulnerabilities, what ASST does on your machine |
+| [Third-party notices](THIRD_PARTY_NOTICES.md) | Licenses of dependencies and bundled data |
+
 # Special Thanks
 
 Special Thanks to:
@@ -354,3 +395,7 @@ Special Thanks to:
 4. OWASP Foundation
 
 For making this toolkit possible by providing their guidance and help.
+
+# License
+
+MIT, see [LICENSE.md](LICENSE.md). The npm packages ASST uses and the advisory and lifecycle data it ships with have their own licenses; see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

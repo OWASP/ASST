@@ -22,7 +22,8 @@
     "README.md",
     "CHANGELOG.md",
     "SECURITY.md",
-    "LICENSE.md"
+    "LICENSE.md",
+    "THIRD_PARTY_NOTICES.md"
   ],
   "scripts": {
     "test": "node scripts/run-tests.js",

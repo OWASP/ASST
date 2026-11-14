@@ -20,7 +20,7 @@ ENV NODE_ENV=production \
 WORKDIR /opt/asst
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts --no-audit --no-fund && npm cache clean --force
-COPY main.js config.js config_php_lang.js LICENSE.md ./
+COPY main.js config.js config_php_lang.js LICENSE.md THIRD_PARTY_NOTICES.md ./
 COPY core ./core
 COPY langs ./langs
 COPY data ./data

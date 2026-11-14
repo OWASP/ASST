@@ -9,7 +9,7 @@ pitch: OWASP ASST (Automated Software Security Toolkit) | A Novel Open Source We
 
 ---
 
-# OWASP ASST #BETA
+# OWASP ASST
 OWASP ASST (Automated Software Security Toolkit) | A Novel Open Source Web Security Scanner.
 
 Note: AWSS is the older name of ASST

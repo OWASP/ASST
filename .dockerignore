@@ -9,6 +9,7 @@ scripts
 *.md
 !langs/**/*.md
 !LICENSE.md
+!THIRD_PARTY_NOTICES.md
 report.*
 asst-out
 asst-results
